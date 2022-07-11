@@ -1,0 +1,130 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:400,300,100);
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+body::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    font-family: "Lato";
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(6,20,35,1) 48%, rgba(14,47,82,1) 100%);
+    width: 100vw;
+    height: 100vh;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+section {
+    height: 100vh;
+    display: flex;
+    /* flex-direction: column; */
+    justify-content: center;
+    /* align-items: center; */
+    color: white;
+}
+
+section h1 {
+  padding-top: 5vh;
+}
+
+section input {
+  padding-top: 5vh;
+}
+
+.one {
+    justify-content: center;
+    background: rgb(36,164,138);
+}
+
+.two {
+    background: rgb(211, 79, 79);
+}
+
+.three {
+    background: rgb(67,91,175);
+}
+
+.four {
+    background: lightsalmon;
+}
+
+.five {
+    background: cyan;
+}
+
+form {
+  width: 100%;
+}
+
+.formgroup {
+  top: 40%;
+  position: relative;
+  justify-content: center;
+  padding: 15px 0 0;
+  margin-top: 10px;
+  width: 75%;
+  left: 12.5%;
+}
+
+.formfield {
+  font-family: inherit;
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid white;
+  outline: 0;
+  font-size: 1.3rem;
+  color: #fff;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+}
+.formfield::placeholder {
+  color: transparent;
+}
+.formfield:placeholder-shown ~ .formlabel {
+  font-size: 1.3rem;
+  cursor: text;
+  top: 20px;
+}
+
+.formlabel {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 1rem;
+  color: white;
+}
+
+.formfield:focus {
+  padding-bottom: 6px;
+  font-weight: 700;
+  border-width: 3px;
+  border-image: linear-gradient(to right, white, #38ef7d);
+  border-image-slice: 1;
+}
+.formfield:focus ~ .formlabel {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 1rem;
+  color: #38ef7d;
+  font-weight: 700;
+}
+
+/* reset input */
+.formfield:required, .formfield:invalid {
+  box-shadow: none;
+}
+
+input {
+  -webkit-appearance: none;
+}

@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Webhook;
+use App\Http\Controllers\PageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,11 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::post('/webhook', [Webhook::class, 'index']);
+Route::get('/webhook', function () {
+    return view('home');
 });
 
-Route::get('/misfits', function () {
-    return view('Misfits/misfits');
-});
+Route::get('/', [Webhook::class, 'Login']);
+Route::post('/', [Webhook::class, 'PostLogin']);
 
