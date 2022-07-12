@@ -25,12 +25,11 @@ class Webhook extends Controller
             // Setup message for camping and attends
             $userMessage = $event['message']['text'];
 
-            $message = "Bot Connected with message: " + $userMessage;
+            $message = "Bot Connected with message: " . $userMessage;
             $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
             $result = $bot->replyMessage($event['replyToken'], $textMessageBuilder);
             return $result->getHTTPStatus() . ' ' . $result->getRawBody();
         }
-        
     }
 
     public function Login()
