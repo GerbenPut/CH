@@ -71,7 +71,7 @@ class Webhook extends Controller
                     : $lines->join("\n");
             }
 
-            if ($pieces[0] == "timers") {
+            if ($pieces[0] == "timer") {
                 $lines = BossTimer::query()->where('type', $pieces[1])
                 ->map(fn (BossTimer $timer) => sprintf('%s opens in %s and closes in %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(),$timer->date->addMinutes($timer->closed)->diffForHumans()));
                 
