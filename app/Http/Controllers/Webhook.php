@@ -15,8 +15,8 @@ class Webhook extends Controller
         $data = json_decode($body, true);
 
         foreach ($data['events'] as $event) {
-            $userMessage = $event['message']['text'];
-
+            // $userMessage = $event['message']['text'];
+            $userMessage = "The connection works";
             // $message = "Rogue: https://sourceartz.com/ronin/rogue\n\nRanger: https://sourceartz.com/ronin/ranger\n\nMage: https://sourceartz.com/ronin/mage\n\nDruid: https://sourceartz.com/ronin/druid\n\nWarrior: https://sourceartz.com/ronin/warrior\n\n";
             $message = $userMessage;
             $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
