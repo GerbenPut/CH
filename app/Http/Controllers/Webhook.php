@@ -24,6 +24,8 @@ class Webhook extends Controller
 	    {
             // Setup message for camping and attends
             $userMessage = $event['message']['text'];
+            $userMessage = strtolower($userMessage);
+            $userMessage = preg_replace('#\s+#', ' ', $userMessage);
 
             $message = "Bot Connected with message: " . $userMessage;
             $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
