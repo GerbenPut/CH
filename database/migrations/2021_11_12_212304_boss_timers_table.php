@@ -17,9 +17,9 @@ class BossTimersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('type');
-            $table->integer('date');
-            $table->integer('open');
-            $table->integer('closed');
+            $table->datetime('date');
+            $table->unsignedInteger('open');
+            $table->unsignedInteger('closed');
             $table->timestamps();
         });
     }

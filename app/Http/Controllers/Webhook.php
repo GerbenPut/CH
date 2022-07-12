@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\BossTimer;
 
 class Webhook extends Controller
 {
@@ -26,11 +27,28 @@ class Webhook extends Controller
             $userMessage = $event['message']['text'];
             $userMessage = strtolower($userMessage);
             $userMessage = preg_replace('#\s+#', ' ', $userMessage);
+            $userMessage=rtrim($userMessage);
+            $pieces = explode(' ', $userMessage);
 
-            $message = "Bot Connected with message: " . $userMessage;
-            $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
-            $result = $bot->replyMessage($event['replyToken'], $textMessageBuilder);
-            return $result->getHTTPStatus() . ' ' . $result->getRawBody();
+            if ($pieces[0] == "reset") {
+                $timer = BossTimer::query()->firstWhere('name', $pieces[1]);
+
+                if ($timer === null) {
+                    $timer = new BossTimer();
+                    $timer->name = $pieces[1];
+                    $timer->type = 'normal';
+                    $timer->open = 180; // standaard waarde
+                    $timer->closed = 10; // 10 min later? (miss beter in seconden opslaan?)
+                }
+
+                $timer->date = now();
+                $timer->save();
+                
+                $message = $pieces[1] . "has been reset! (hopefully)";
+                $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
+                $result = $bot->replyMessage($event['replyToken'], $textMessageBuilder);
+                return $result->getHTTPStatus() . ' ' . $result->getRawBody();
+            }
         }
     }
 
