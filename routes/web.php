@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Webhook;
-use App\Http\Controllers\PageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,7 +14,7 @@ use App\Http\Controllers\PageController;
 |
 */
 
-Route::post('/webhook', [Webhook::class, 'index']);
+
 Route::get('/webhook', function () {
     return view('home');
 });
