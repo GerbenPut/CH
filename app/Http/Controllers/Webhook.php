@@ -71,12 +71,6 @@ class Webhook extends Controller
                     : $lines->join("\n");
             }
 
-            if ($pieces[0] == "list") {
-                
-                
-                $message = $event['source']['groupId'];
-            }
-
             $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
             $result = $bot->replyMessage($event['replyToken'], $textMessageBuilder);
             return $result->getHTTPStatus() . ' ' . $result->getRawBody();
