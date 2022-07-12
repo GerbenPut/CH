@@ -64,7 +64,7 @@ class Webhook extends Controller
 
             if ($pieces[0] == "timers") {
                 $lines = BossTimer::all()
-                    ->map(fn (BossTimer $timer) => sprintf('Reset on %s', $timer->date));
+                ->map(fn (BossTimer $timer) => sprintf('%s spawns in %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans()));
                 
                 $message = $lines->isEmpty()
                     ? 'No timers.'
