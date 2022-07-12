@@ -36,15 +36,33 @@ class Webhook extends Controller
                 if ($timer === null) {
                     $timer = new BossTimer();
                     $timer->name = $pieces[1];
-                    $timer->type = 'normal';
-                    $timer->open = 180; // standaard waarde
-                    $timer->closed = 10; // 10 min later? (miss beter in seconden opslaan?)
+                    $timer->type = 'raid';
+                    $timer->open = 0; // standaard waarde
+                    $timer->closed = 0; // 10 min later? (miss beter in seconden opslaan?)
                 }
 
                 $timer->date = now();
                 $timer->save();
                 
-                $message = $pieces[1] . "has been reset! (hopefully)";
+                $message = $pieces[1] . " has been reset!";
+                $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
+                $result = $bot->replyMessage($event['replyToken'], $textMessageBuilder);
+                return $result->getHTTPStatus() . ' ' . $result->getRawBody();
+            }
+            
+            if ($pieces[0] == "change") {
+                $timer = BossTimer::query()->firstWhere('name', $pieces[1]);
+            
+                if ($timer === null) {
+                    // hier berichtje sturen
+                    return;
+                }
+            
+                $timer->open = $pieces[2];
+                $timer->closed = $pieces[3];
+                $timer->save();
+                            
+                $message = $pieces[1] . " it respawn time has been modified!";
                 $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
                 $result = $bot->replyMessage($event['replyToken'], $textMessageBuilder);
                 return $result->getHTTPStatus() . ' ' . $result->getRawBody();
