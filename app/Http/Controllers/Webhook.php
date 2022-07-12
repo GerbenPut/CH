@@ -9,6 +9,9 @@ class Webhook extends Controller
     public function index() {
         $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient(env('LINE_BOT_CHANNEL_ACCESS_TOKEN'));
         $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => env('LINE_BOT_CHANNEL_SECRET')]);
+
+        $body 	   = file_get_contents('php://input');
+	    $signature = $_SERVER['HTTP_X_LINE_SIGNATURE'];
         $data = json_decode($body, true);
 
         foreach ($data['events'] as $event) {
