@@ -45,9 +45,6 @@ class Webhook extends Controller
                 $timer->save();
                 
                 $message = $pieces[1] . " has been reset!";
-                $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
-                $result = $bot->replyMessage($event['replyToken'], $textMessageBuilder);
-                return $result->getHTTPStatus() . ' ' . $result->getRawBody();
             }
             
             if ($pieces[0] == "change") {
@@ -62,11 +59,21 @@ class Webhook extends Controller
                 $timer->closed = $pieces[3];
                 $timer->save();
                             
-                $message = $pieces[1] . " it respawn time has been modified!";
-                $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
-                $result = $bot->replyMessage($event['replyToken'], $textMessageBuilder);
-                return $result->getHTTPStatus() . ' ' . $result->getRawBody();
+                $message = $pieces[1] . " its respawn times has been modified!";
             }
+
+            if ($pieces[0] == "timers") {
+                $lines = BossTimers::all()
+                    ->map(fn (BossTimer $timer) => sprintf('Reset on %s', $timer->date));
+                
+                $message = $lines->isEmpty()
+                    ? 'No timers.'
+                    : $lines->join("\n");
+            }
+
+            $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
+            $result = $bot->replyMessage($event['replyToken'], $textMessageBuilder);
+            return $result->getHTTPStatus() . ' ' . $result->getRawBody();
         }
     }
 
