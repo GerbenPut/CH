@@ -71,6 +71,15 @@ class Webhook extends Controller
                     : $lines->join("\n");
             }
 
+            if ($pieces[0] == "timers") {
+                $lines = BossTimer::query()->where('type', $pieces[1])
+                ->map(fn (BossTimer $timer) => sprintf('%s opens in %s and closes in %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(),$timer->date->addMinutes($timer->closed)->diffForHumans()));
+                
+                $message = $lines->isEmpty()
+                    ? 'No timers.'
+                    : $lines->join("\n");
+            }
+
             $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
             $result = $bot->replyMessage($event['replyToken'], $textMessageBuilder);
             return $result->getHTTPStatus() . ' ' . $result->getRawBody();
