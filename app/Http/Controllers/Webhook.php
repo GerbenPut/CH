@@ -101,11 +101,11 @@ class Webhook extends Controller
                                 $pieces = explode(' ', $msg);
 
                                 if (is_numeric($pieces[9])) {
-                                    if (intval($pieces[9]) <= intval($newp[2]) && $pieces[10] == "minutes" ) {
+                                    if ((int)$pieces[9] <= (int)$newp[2] && $pieces[10] == "minutes" ) {
                                         array_push($newmessage, $pieces[0] . " | opens: unknown - closes: " . $pieces[9] . " " . $pieces[10]);
                                     }
                                 } else if (is_numeric($pieces[2])) {
-                                    if (intval($pieces[3]) <= intval($newp[2]) && $pieces[4] == "minutes" ){
+                                    if ((int)$pieces[3] <= (int)$newp[2] && $pieces[4] == "minutes" ){
                                         array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
                                     }
                                 } 
