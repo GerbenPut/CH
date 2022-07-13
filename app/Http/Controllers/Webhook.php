@@ -115,7 +115,13 @@ class Webhook extends Controller
                     if ($timer === null) {
                         $message = "Boss not found!";
                     } else {
-                        $timer->date = now()->addMinutes($pieces[2]);
+                        if ($pieces[2] > 0) {
+                            $timer->date = now()->addMinutes($pieces[2]);
+                        } else {
+                            $pieces[2] = $pieces[2] * -1;
+                            $timer->date = now()->removeMinutes($pieces[2]);
+                        }
+                        
                         $timer->save();
                         $message = $pieces[1] . " has been adjusted!";
                     }
