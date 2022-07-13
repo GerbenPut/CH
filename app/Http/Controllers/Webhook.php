@@ -114,7 +114,43 @@ class Webhook extends Controller
 
                         $message = join("\n",$newmessage);
                     }
-                } else if ($pieces[0] == "reset") {
+                } else if ($event['source']['groupId'] == "C89dae52ca0c01f5c46dd825c2a4eed2d") {
+                    // Raid Timers
+                    if ($pieces[0] == "due" || $pieces[0] == "unknown" ) {
+                        $lines = BossTimer::all()
+                            ->map(fn (BossTimer $timer) => sprintf('%s opens in %s and closes in %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(),$timer->date->addMinutes($timer->closed)->diffForHumans()));
+                            
+                        if ($lines->isEmpty()) {
+                            $message = "Invalid timer type.";
+                        } else {
+                            $newmessage = array();
+                            $newp = $pieces;
+                            foreach ($lines as $msg) {
+                                if ($newp[0] == "unknown") {
+                                    $pieces = explode(' ', $msg);
+                                    if ($pieces[5] == "ago" && $pieces[11] == "ago") {
+                                        array_push($newmessage, $pieces[0] . " | opens: unknown - closes: unknown");
+                                    } else {
+                                        array_push($newmessage, "No unknown bosses. Good job clan!");
+                                    }
+                                } else if ($newp[0] == "due") {
+                                    $pieces = explode(' ', $msg);
+                                    if ($pieces[5] == "ago" && is_numeric((int)$pieces[9]) && $pieces[11] == "from") {
+                                        array_push($newmessage, $pieces[0] . " | opens: unknown - closes: " . $pieces[9] . " " . $pieces[10]);
+                                    } else if (is_numeric((int)$pieces[3])) {
+                                        if ((int)$pieces[3] <= (int)$newp[2] && $pieces[4] == "minutes"){
+                                            array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
+                                        }
+                                    } 
+                                } else {
+                                    array_push($newmessage, "Invalid command.");
+                                }
+    
+                            }
+    
+                            $message = join("\n",$newmessage);
+                        }
+                    } else if ($pieces[0] == "reset") {
                     $timer = BossTimer::query()->firstWhere('name', $pieces[1]);
         
                     if ($timer === null) {
