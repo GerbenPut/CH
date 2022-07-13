@@ -39,9 +39,20 @@ class Webhook extends Controller
                         $lines = BossTimer::all()->where('type', $pieces[1])
                         ->map(fn (BossTimer $timer) => sprintf('%s opens: %s - closes: %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(null, true),$timer->date->addMinutes($timer->closed)->diffForHumans(null, true)));
                         
-                        $message = $lines->isEmpty()
-                            ? 'No timers.'
-                            : $lines->join("\n");
+                        if ($lines->isEmpty()) {
+                            $message = "Invalid timer type.";
+                        } else {
+                            foreach ($lines as $msg) {
+                                $pieces = explode(' ', $msg);
+                                if ($pieces[5] == "ago" && $pieces[11] == "ago") {
+                                    $message = $pieces[0] . "opens: unknown - closes: unknown";
+                                } else if ($pieces[5] == "ago") {
+                                    $message = $pieces[0] . "opens: unknown - closes: " . $pieces[9] . $pieces[10];
+                                } else {
+                                    $message = $pieces[0] . "opens:" . $pieces[3] . $pieces[4] . " - closes: " . $pieces[10] . $pieces[11];
+                                }
+                            }
+                        }
                     }
                 } else if ($pieces[0] == "reset") {
                     $raids = array("necromancer", "proteus", "gelebron", "dhiothu", "bloodthorn", "hrungnir", "mordris");
@@ -61,15 +72,6 @@ class Webhook extends Controller
                 } else {
                     $message = "Command not found.";
                 }
-            } else if ($event['source']['groupId'] == "C9c94873e053e9a41bc9e55c1e9c54654") {
-                // Admin
-                $message = admin($pieces);
-            } else if ($event['source']['groupId'] == "C0625b08c5924477dc699c869888b8fc5") {
-                // Commands
-                $message = commands($pieces);
-            } else if ($event['source']['groupId'] == "C98fd96ccda635152017fc278acdf23ba") {
-                // Attends
-                $message = attends($pieces);
             } else if ($event['source']['groupId'] == "C89dae52ca0c01f5c46dd825c2a4eed2d") {
                 // Raid Timers
                 if ($pieces[0] == "timers") {
@@ -92,6 +94,15 @@ class Webhook extends Controller
                 } else {
                     $message = "Command not found.";
                 }
+            } else if ($event['source']['groupId'] == "C9c94873e053e9a41bc9e55c1e9c54654") {
+                // Admin
+                $message = admin($pieces);
+            } else if ($event['source']['groupId'] == "C0625b08c5924477dc699c869888b8fc5") {
+                // Commands
+                $message = commands($pieces);
+            } else if ($event['source']['groupId'] == "C98fd96ccda635152017fc278acdf23ba") {
+                // Attends
+                $message = attends($pieces);
             } else {
                 return;
             }
