@@ -44,7 +44,8 @@ class Webhook extends Controller
                             : $lines->join("\n");
                     }
                 } else if ($pieces[0] == "reset") {
-                    if ($pieces[1] == "raid") {
+                    $raids = array("necromancer", "proteus", "gelebron", "dhiothu", "bloodthorn", "hrungnir", "mordris");
+                    if (in_array($pieces[1], $raids)) {
                         $message = "You are not allowed to those bosses yet. *insert evil smiley*";
                     } else {
                         $timer = BossTimer::query()->firstWhere('name', $pieces[1]);
