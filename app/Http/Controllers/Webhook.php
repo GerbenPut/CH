@@ -53,7 +53,9 @@ class Webhook extends Controller
                                     array_push($newmessage, $pieces[0] . "opens:" . $pieces[3] . $pieces[4] . " - closes: " . $pieces[10] . $pieces[11]);
                                 }
                             }
-                            $message = $newmessage->join("\n");
+                            
+                            $message = join("\n",$newmessage);
+                            // $message = $newmessage->join("\n");
                         }
                     }
                 } else if ($pieces[0] == "reset") {
