@@ -116,10 +116,10 @@ class Webhook extends Controller
                         $message = "Boss not found!";
                     } else {
                         if ($pieces[2] == "add") {
-                            $timer->date = now()->addMinutes($pieces[3]);
+                            $timer->date = $timer->date->addMinutes($pieces[3]);
                             $message = $pieces[1] . " has been adjusted!";
                         } else if ($pieces[2] == "sub"){
-                            $timer->date = now()->subMinutes($pieces[3]);
+                            $timer->date = $timer->date->subMinutes($pieces[3]);
                             $message = $pieces[1] . " has been adjusted!";
                         } else {
                             $message = "Wrong input. 'Adjust bossname sub/add minutes'";
