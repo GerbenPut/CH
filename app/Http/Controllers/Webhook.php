@@ -99,7 +99,7 @@ class Webhook extends Controller
                                 }
                             } else if (is_numeric($newp[2])) {
                                 $pieces = explode(' ', $msg);
-                                if ($pieces[5] == "ago" && is_numeric((int)$pieces[9] && $pieces[11] == "from")) {
+                                if ($pieces[5] == "ago" && is_numeric((int)$pieces[9]) && $pieces[11] == "from") {
                                     array_push($newmessage, $pieces[0] . " | opens: unknown - closes: " . $pieces[9] . " " . $pieces[10]);
                                 } else if (is_numeric((int)$pieces[3])) {
                                     array_push($newmessage, "2");
