@@ -34,7 +34,7 @@ class Webhook extends Controller
                 // Timers
                 if ($pieces[0] == "timers") {
                     if ($pieces[1] == "raid") {
-                        $message = "You are not allowed to that boss yet. *insert evil smiley*";
+                        $message = "You are not allowed to those bosses yet. *insert evil smiley*";
                     } else {
                         $lines = BossTimer::all()->where('type', $pieces[1])
                         ->map(fn (BossTimer $timer) => sprintf('%s opens: %s - closes: %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(null, true),$timer->date->addMinutes($timer->closed)->diffForHumans(null, true)));
@@ -45,7 +45,7 @@ class Webhook extends Controller
                     }
                 } else if ($pieces[0] == "reset") {
                     if ($pieces[1] == "raid") {
-                        $message = "You are not allowed to that boss yet. *insert evil smiley*";
+                        $message = "You are not allowed to those bosses yet. *insert evil smiley*";
                     } else {
                         $timer = BossTimer::query()->firstWhere('name', $pieces[1]);
         
