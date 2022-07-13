@@ -119,7 +119,7 @@ class Webhook extends Controller
                             $timer->date = now()->addMinutes($pieces[2]);
                         } else {
                             $pieces[2] = $pieces[2] * -1;
-                            $timer->date = now()->removeMinutes($pieces[2]);
+                            $timer->date = now()->subMinutes($pieces[2]);
                         }
                         
                         $timer->save();
