@@ -84,16 +84,16 @@ class Webhook extends Controller
 
                     foreach ($lines as $line) {
                         $name = $line[1];
-                        if (str_word_count($line[3]->addMinutes($line[6])) == 3) {
+                        if (str_word_count($line[3]->addMinutes($line[6])->diffForHumans()) == 3) {
                             $open = "unknown";
                         } else {
-                            $open = implode(' ', array_slice(explode(' ', $line[3]->addMinutes($line[6])), 0, 2));
+                            $open = implode(' ', array_slice(explode(' ', $line[3]->addMinutes($line[6])->diffForHumans()), 0, 2));
                         }
 
-                        if (str_word_count($line[3]->addMinutes($line[7])) == 3) {
+                        if (str_word_count($line[3]->addMinutes($line[7])->diffForHumans()) == 3) {
                             $close = "unknown";
                         } else {
-                            $close = implode(' ', array_slice(explode(' ', $line[3]->addMinutes($line[7])), 0, 2));
+                            $close = implode(' ', array_slice(explode(' ', $line[3]->addMinutes($line[7])->diffForHumans()), 0, 2));
                         }
 
                         array_push($newmessage, $name . " | Open: " . $open . " - Close: " . $close);
