@@ -178,8 +178,8 @@ class Webhook extends Controller
                                 if ($pieces[5] == "ago" && $pieces[11] == "ago") {
                                     array_push($newmessage, $pieces[0] . " | opens: unknown - closes: unknown");
                                 }
-                            } else if (count($newp) == 2) {
-                                if ($newp[0] == "due") {
+                            } else if ($newp[0] == "due") {
+                                if (count($newp) == 2) {
                                     $pieces = explode(' ', $msg);
                                     if ($pieces[5] == "ago" && is_numeric((int)$pieces[9]) && $pieces[11] == "from") {
                                         array_push($newmessage, $pieces[0] . " | opens: unknown - closes: " . $pieces[9] . " " . $pieces[10]);
@@ -188,6 +188,8 @@ class Webhook extends Controller
                                             array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
                                         }
                                     } 
+                                } else {
+                                    array_push($newmessage, "Please specify a time. (Due 20)");
                                 }
                                 
                             } else {
