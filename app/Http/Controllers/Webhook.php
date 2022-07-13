@@ -99,12 +99,13 @@ class Webhook extends Controller
                                 }
                             } else if (is_numeric($newp[2])) {
                                 $pieces = explode(' ', $msg);
-                                array_push($newmessage, "For fuck sake.");
                                 if (is_numeric($pieces[9])) {
+                                    array_push($newmessage, "9");
                                     if ((int)$pieces[9] <= (int)$newp[2] && $pieces[10] == "minutes") {
                                         array_push($newmessage, $pieces[0] . " | opens: unknown - closes: " . $pieces[9] . " " . $pieces[10]);
                                     }
                                 } else if (is_numeric($pieces[2])) {
+                                    array_push($newmessage, "2");
                                     if ((int)$pieces[3] <= (int)$newp[2] && $pieces[4] == "minutes"){
                                         array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
                                     }
