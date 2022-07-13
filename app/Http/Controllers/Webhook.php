@@ -82,24 +82,23 @@ class Webhook extends Controller
                     $lines = BossTimer::all()->where('type', $pieces[1])
                         ->map(fn (BossTimer $timer) => sprintf('%s opens in %s and closes in %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(),$timer->date->addMinutes($timer->closed)->diffForHumans()));
                         
-                        if ($lines->isEmpty()) {
-                            $message = "Invalid timer type.";
-                        } else {
-                            $newmessage = array();
-                            foreach ($lines as $msg) {
-                                $pieces = explode(' ', $msg);
-                                if ($pieces[5] == "ago" && $pieces[11] == "ago") {
-                                    array_push($newmessage, $pieces[0] . " | opens: unknown - closes: unknown");
-                                } else if ($pieces[5] == "ago") {
-                                    array_push($newmessage, $pieces[0] . " | opens: unknown - closes: " . $pieces[9] . " " . $pieces[10]);
-                                } else {
-                                    array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
-                                }
+                    if ($lines->isEmpty()) {
+                        $message = "Invalid timer type.";
+                    } else {
+                        $newmessage = array();
+                        foreach ($lines as $msg) {
+                            $pieces = explode(' ', $msg);
+                            if ($pieces[5] == "ago" && $pieces[11] == "ago") {
+                                array_push($newmessage, $pieces[0] . " | opens: unknown - closes: unknown");
+                            } else if ($pieces[5] == "ago") {
+                                array_push($newmessage, $pieces[0] . " | opens: unknown - closes: " . $pieces[9] . " " . $pieces[10]);
+                            } else {
+                                array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
                             }
-
-                            $message = join("\n",$newmessage);
                         }
 
+                        $message = join("\n",$newmessage);
+                    }
                 } else if ($pieces[0] == "reset") {
                     $timer = BossTimer::query()->firstWhere('name', $pieces[1]);
         
@@ -109,6 +108,16 @@ class Webhook extends Controller
                         $timer->date = now();
                         $timer->save();
                         $message = $pieces[1] . " has been reset!";
+                    }
+                } else if ($pieces[0] == "adjust") {
+                    $timer = BossTimer::query()->firstWhere('name', $pieces[1]);
+        
+                    if ($timer === null) {
+                        $message = "Boss not found!";
+                    } else {
+                        $timer->date = now()->addMinutes($pieces[2]);
+                        $timer->save();
+                        $message = $pieces[1] . " has been adjusted!";
                     }
                 } else {
                     $message = "Command not found.";
