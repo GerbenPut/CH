@@ -37,7 +37,7 @@ class Webhook extends Controller
                         $message = "You are not allowed to those bosses yet. *insert evil smiley*";
                     } else {
                         $lines = BossTimer::all()->where('type', $pieces[1])
-                        ->map(fn (BossTimer $timer) => sprintf('%s opens: %s - closes: %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(null, true),$timer->date->addMinutes($timer->closed)->diffForHumans(null, true)));
+                        ->map(fn (BossTimer $timer) => sprintf('%s opens: %s - closes: %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(),$timer->date->addMinutes($timer->closed)->diffForHumans()));
                         
                         if ($lines->isEmpty()) {
                             $message = "Invalid timer type.";
