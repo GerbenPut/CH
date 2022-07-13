@@ -95,7 +95,7 @@ class Webhook extends Controller
                 $message = $pieces[1] . " has been reset!";
             }
         } else {
-            $message = "Command not found."
+            $message = "Command not found.";
         }
     }
 
@@ -127,7 +127,7 @@ class Webhook extends Controller
                 }
             }
         } else {
-            $message = "Command not found."
+            $message = "Command not found.";
         }
     }
 
