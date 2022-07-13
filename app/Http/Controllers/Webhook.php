@@ -118,7 +118,6 @@ class Webhook extends Controller
                         if ($pieces[2] > 0) {
                             $timer->date = now()->addMinutes($pieces[2]);
                         } else {
-                            $pieces[2] = $pieces[2] * -1;
                             $timer->date = now()->subMinutes($pieces[2]);
                         }
                         
