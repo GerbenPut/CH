@@ -43,20 +43,69 @@ class Webhook extends Controller
                             $message = "Invalid timer type.";
                         } else {
                             $newmessage = array();
+                            $newp = $pieces;
                             foreach ($lines as $msg) {
-                                $pieces = explode(' ', $msg);
-                                if ($pieces[5] == "ago" && $pieces[11] == "ago") {
-                                    array_push($newmessage, $pieces[0] . " | opens: unknown - closes: unknown");
-                                } else if ($pieces[5] == "ago") {
-                                    array_push($newmessage, $pieces[0] . " | opens: unknown - closes: " . $pieces[9] . " " . $pieces[10]);
+                                if (count($newp) == 2) {
+                                    $pieces = explode(' ', $msg);
+                                    if ($pieces[5] == "ago" && $pieces[11] == "ago") {
+                                        array_push($newmessage, $pieces[0] . " | opens: unknown - closes: unknown");
+                                    } else if ($pieces[5] == "ago") {
+                                        array_push($newmessage, $pieces[0] . " | opens: unknown - closes: " . $pieces[9] . " " . $pieces[10]);
+                                    } else {
+                                        array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
+                                    }
+                                } else if (is_numeric($newp[2])) {
+                                    $pieces = explode(' ', $msg);
+                                    if ($pieces[5] == "ago" && is_numeric((int)$pieces[9]) && $pieces[11] == "from") {
+                                        array_push($newmessage, $pieces[0] . " | opens: unknown - closes: " . $pieces[9] . " " . $pieces[10]);
+                                    } else if (is_numeric((int)$pieces[3])) {
+                                        if ((int)$pieces[3] <= (int)$newp[2] && $pieces[4] == "minutes" && $pieces[11] != "ago"){
+                                            array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
+                                        }
+                                    } 
                                 } else {
-                                    array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
+                                    array_push($newmessage, "Invalid command.");
                                 }
+
                             }
 
                             $message = join("\n",$newmessage);
-                            // $message = $newmessage->join("\n");
                         }
+                    }
+                } else if ($pieces[0] == "unknown" || $pieces[0] == "due") {
+                    $lines = BossTimer::all()->where('type', '!=' , "raid")
+                        ->map(fn (BossTimer $timer) => sprintf('%s opens in %s and closes in %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(),$timer->date->addMinutes($timer->closed)->diffForHumans()));
+                        
+                    if ($lines->isEmpty()) {
+                        $message = "Invalid timer type.";
+                    } else {
+                        $newmessage = array();
+                        $newp = $pieces;
+                        foreach ($lines as $msg) {
+                            if ($newp[0] == "unknown") {
+                                $pieces = explode(' ', $msg);
+                                if ($pieces[5] == "ago" && $pieces[11] == "ago") {
+                                    array_push($newmessage, $pieces[0] . " | opens: unknown - closes: unknown");
+                                }
+                            } else if (count($newp) == 2) {
+                                if ($newp[0] == "due") {
+                                    $pieces = explode(' ', $msg);
+                                    if ($pieces[5] == "ago" && is_numeric((int)$pieces[9]) && $pieces[11] == "from") {
+                                        array_push($newmessage, $pieces[0] . " | opens: unknown - closes: " . $pieces[9] . " " . $pieces[10]);
+                                    } else if (is_numeric((int)$pieces[3])) {
+                                        if ((int)$pieces[3] <= (int)$newp[1] && $pieces[4] == "minutes" && $pieces[11] != "ago"){
+                                            array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
+                                        }
+                                    } 
+                                }
+                                
+                            } else {
+                                array_push($newmessage, "Invalid command.");
+                            }
+
+                        }
+
+                        $message = join("\n",$newmessage);
                     }
                 } else if ($pieces[0] == "reset") {
                     $raids = array("necromancer", "proteus", "gelebron", "dhiothu", "bloodthorn", "hrungnir", "mordris");
