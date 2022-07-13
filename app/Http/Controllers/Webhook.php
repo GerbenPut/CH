@@ -40,7 +40,7 @@ class Webhook extends Controller
                         ->map(fn (BossTimer $timer) => sprintf('%s opens in %s and closes in %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(),$timer->date->addMinutes($timer->closed)->diffForHumans()));
                         
                         if ($lines->isEmpty()) {
-                            $message = "Invalid timer type.";
+                            $message = "Invalid timer type. See notes for options.";
                         } else {
                             $newmessage = array();
                             $newp = $pieces;
@@ -64,7 +64,7 @@ class Webhook extends Controller
                                         }
                                     } 
                                 } else {
-                                    array_push($newmessage, "Invalid command.");
+                                    array_push($newmessage, "Invalid command. See notes for options.");
                                 }
 
                             }
@@ -77,7 +77,7 @@ class Webhook extends Controller
                         ->map(fn (BossTimer $timer) => sprintf('%s opens in %s and closes in %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(),$timer->date->addMinutes($timer->closed)->diffForHumans()));
                         
                     if ($lines->isEmpty()) {
-                        $message = "Invalid timer type.";
+                        $message = "Invalid timer type. See notes for options.";
                     } else {
                         $newmessage = array();
                         $newp = $pieces;
@@ -100,7 +100,7 @@ class Webhook extends Controller
                                 }
                                 
                             } else {
-                                array_push($newmessage, "Invalid command.");
+                                array_push($newmessage, "Invalid command. See notes for options.");
                             }
 
                         }
@@ -115,7 +115,7 @@ class Webhook extends Controller
                         $timer = BossTimer::query()->firstWhere('name', $pieces[1]);
         
                         if ($timer === null) {
-                            $message = "Boss not found!";
+                            $message = "Boss not found! See notes for options.";
                         } else {
                             $timer->date = now();
                             $timer->save();
@@ -123,7 +123,7 @@ class Webhook extends Controller
                         }
                     }
                 } else {
-                    $message = "Command not found.";
+                    $message = "Command not found. See notes for options.";
                 }
             } else if ($event['source']['groupId'] == "C89dae52ca0c01f5c46dd825c2a4eed2d") {
                 // Raid Timers
@@ -132,7 +132,7 @@ class Webhook extends Controller
                         ->map(fn (BossTimer $timer) => sprintf('%s opens in %s and closes in %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(),$timer->date->addMinutes($timer->closed)->diffForHumans()));
                         
                     if ($lines->isEmpty()) {
-                        $message = "Invalid timer type.";
+                        $message = "Invalid timer type. See notes for options.";
                     } else {
                         $newmessage = array();
                         $newp = $pieces;
@@ -156,7 +156,7 @@ class Webhook extends Controller
                                     }
                                 } 
                             } else {
-                                array_push($newmessage, "Invalid command.");
+                                array_push($newmessage, "Invalid command. See notes for options.");
                             }
 
                         }
@@ -168,7 +168,7 @@ class Webhook extends Controller
                         ->map(fn (BossTimer $timer) => sprintf('%s opens in %s and closes in %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(),$timer->date->addMinutes($timer->closed)->diffForHumans()));
                         
                     if ($lines->isEmpty()) {
-                        $message = "Invalid timer type.";
+                        $message = "Invalid timer type. See notes for options.";
                     } else {
                         $newmessage = array();
                         $newp = $pieces;
@@ -191,7 +191,7 @@ class Webhook extends Controller
                                 }
                                 
                             } else {
-                                array_push($newmessage, "Invalid command.");
+                                array_push($newmessage, "Invalid command. See notes for options.");
                             }
 
                         }
@@ -202,7 +202,7 @@ class Webhook extends Controller
                     $timer = BossTimer::query()->firstWhere('name', $pieces[1]);
         
                     if ($timer === null) {
-                        $message = "Boss not found!";
+                        $message = "Boss not found! See notes for options.";
                     } else {
                         $timer->date = now();
                         $timer->save();
@@ -212,7 +212,7 @@ class Webhook extends Controller
                     $timer = BossTimer::query()->firstWhere('name', $pieces[1]);
         
                     if ($timer === null) {
-                        $message = "Boss not found!";
+                        $message = "Boss not found! See notes for options.";
                     } else {
                         if ($pieces[2] == "add") {
                             $timer->date = $timer->date->addMinutes($pieces[3]);
@@ -233,6 +233,19 @@ class Webhook extends Controller
             } else if ($event['source']['groupId'] == "C9c94873e053e9a41bc9e55c1e9c54654") {
                 // Admin
                 $message = admin($pieces);
+                if ($pieces[0] == "change") {
+                    $timer = BossTimer::query()->firstWhere('name', $pieces[1]);
+                
+                    if ($timer === null) {
+                        $message = "Boss not found. See notes for options.";
+                    } else {
+                        $timer->open = $pieces[2];
+                        $timer->closed = $pieces[3];
+                        $timer->save();
+                                    
+                        $message = $pieces[1] . " its respawn times has been modified!";
+                    }
+                }
             } else if ($event['source']['groupId'] == "C0625b08c5924477dc699c869888b8fc5") {
                 // Commands
                 $message = commands($pieces);
@@ -241,21 +254,6 @@ class Webhook extends Controller
                 $message = attends($pieces);
             } else {
                 return;
-            }
-
-            if ($pieces[0] == "change") {
-                $timer = BossTimer::query()->firstWhere('name', $pieces[1]);
-            
-                if ($timer === null) {
-                    // hier berichtje sturen
-                    return;
-                }
-            
-                $timer->open = $pieces[2];
-                $timer->closed = $pieces[3];
-                $timer->save();
-                            
-                $message = $pieces[1] . " its respawn times has been modified!";
             }
 
 
