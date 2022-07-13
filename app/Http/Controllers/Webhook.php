@@ -232,7 +232,6 @@ class Webhook extends Controller
                 }
             } else if ($event['source']['groupId'] == "C9c94873e053e9a41bc9e55c1e9c54654") {
                 // Admin
-                $message = admin($pieces);
                 if ($pieces[0] == "change") {
                     $timer = BossTimer::query()->firstWhere('name', $pieces[1]);
                 
