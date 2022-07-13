@@ -97,13 +97,6 @@ class Webhook extends Controller
                                 } else {
                                     array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
                                 }
-                            } else if ($newp[2] == "unknown") {
-                                $pieces = explode(' ', $msg);
-                                if ($pieces[5] == "ago" && $pieces[11] == "ago") {
-                                    array_push($newmessage, $pieces[0] . " | opens: unknown - closes: unknown");
-                                } else {
-                                    array_push($newmessage, "No unknown bosses");
-                                }
                             } else if (is_numeric($newp[2])) {
                                 $pieces = explode(' ', $msg);
 
@@ -115,7 +108,7 @@ class Webhook extends Controller
                                     if ($pieces[3] < $newp[2] && $pieces[4] == "minutes" ){
                                         array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
                                     }
-                                }
+                                } 
                             } else {
                                 array_push($newmessage, "Invalid command.");
                             }
