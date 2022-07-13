@@ -86,8 +86,9 @@ class Webhook extends Controller
                         $message = "Invalid timer type.";
                     } else {
                         $newmessage = array();
+                        $newp = $pieces;
                         foreach ($lines as $msg) {
-                            if (count($pieces) == 2) {
+                            if (count($newp) == 2) {
                                 $pieces = explode(' ', $msg);
                                 if ($pieces[5] == "ago" && $pieces[11] == "ago") {
                                     array_push($newmessage, $pieces[0] . " | opens: unknown - closes: unknown");
@@ -96,22 +97,22 @@ class Webhook extends Controller
                                 } else {
                                     array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
                                 }
-                            } else if ($pieces[2] == "unknown") {
+                            } else if ($newp[2] == "unknown") {
                                 $pieces = explode(' ', $msg);
                                 if ($pieces[5] == "ago" && $pieces[11] == "ago") {
                                     array_push($newmessage, $pieces[0] . " | opens: unknown - closes: unknown");
                                 } else {
                                     array_push($newmessage, "No unknown bosses");
                                 }
-                            } else if (is_numeric($pieces[2])) {
-                                $piece = explode(' ', $msg);
+                            } else if (is_numeric($newp[2])) {
+                                $pieces = explode(' ', $msg);
 
-                                if (is_numeric($piece[9])) {
-                                    if ($piece[9] < $pieces[2] && $piece[10] == "minutes" ) {
+                                if (is_numeric($pieces[9])) {
+                                    if ($pieces[9] < $newp[2] && $pieces[10] == "minutes" ) {
                                         array_push($newmessage, $pieces[0] . " | opens: unknown - closes: " . $pieces[9] . " " . $pieces[10]);
                                     }
-                                } else if (is_numeric($piece[2])) {
-                                    if ($piece[3] < $pieces[2] && $piece[4] == "minutes" ){
+                                } else if (is_numeric($pieces[2])) {
+                                    if ($pieces[3] < $newp[2] && $pieces[4] == "minutes" ){
                                         array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
                                     }
                                 }
