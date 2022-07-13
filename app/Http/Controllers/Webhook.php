@@ -83,17 +83,17 @@ class Webhook extends Controller
                     $newmessage = array();
 
                     foreach ($lines as $line) {
-                        $name = $line->name;
-                        if (str_word_count($line->date->addMinutes($line->open)->diffForHumans()) == 3) {
+                        $name = $this->name;
+                        if (str_word_count($this->date->addMinutes($this->open)->diffForHumans()) == 3) {
                             $open = "unknown";
                         } else {
-                            $open = implode(' ', array_slice(explode(' ', $line->date->addMinutes($line->open)->diffForHumans()), 0, 2));
+                            $open = implode(' ', array_slice(explode(' ', $this->date->addMinutes($this->open)->diffForHumans()), 0, 2));
                         }
 
-                        if (str_word_count($line->date->addMinutes($line->closed)->diffForHumans()) == 3) {
+                        if (str_word_count($this->date->addMinutes($this>closed)->diffForHumans()) == 3) {
                             $close = "unknown";
                         } else {
-                            $close = implode(' ', array_slice(explode(' ', $line->date->addMinutes($line->closed)->diffForHumans()), 0, 2));
+                            $close = implode(' ', array_slice(explode(' ', $this->date->addMinutes($this->closed)->diffForHumans()), 0, 2));
                         }
 
                         array_push($newmessage, $name . " | Open: " . $open . " - Close: " . $close);
