@@ -50,7 +50,7 @@ class Webhook extends Controller
                                 } else if ($pieces[5] == "ago") {
                                     array_push($newmessage, $pieces[0] . " | opens: unknown - closes: " . $pieces[9] . " " . $pieces[10]);
                                 } else {
-                                    array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
+                                    array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
                                 }
                             }
 
