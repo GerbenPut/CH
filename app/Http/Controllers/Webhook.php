@@ -75,7 +75,7 @@ class Webhook extends Controller
                 } else if ($pieces[0] == "unknown" || $pieces[0] == "due") {
                     $lines = BossTimer::all()->where('type', '!=' , "raid")
                         ->map(fn (BossTimer $timer) => sprintf('%s opens in %s and closes in %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(),$timer->date->addMinutes($timer->closed)->diffForHumans()));
-                        
+                    $skipline = 0;
                     if ($lines->isEmpty()) {
                         $message = "Invalid timer type. See notes for options.";
                     } else {
@@ -97,7 +97,7 @@ class Webhook extends Controller
                                             array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
                                         }
                                     } 
-                                } else if ($skipline == 1) {
+                                } else if ($skipline == 0) {
                                     array_push($newmessage, "Please specify a time. (Due 20)");
                                     $skipline = 1;
                                 }
@@ -192,7 +192,7 @@ class Webhook extends Controller
                                             array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
                                         }
                                     } 
-                                } else if ($skipline == 1) {
+                                } else if ($skipline == 0) {
                                     array_push($newmessage, "Please specify a time. (Due 20)");
                                     $skipline = 1;
                                 }
