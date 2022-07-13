@@ -33,19 +33,18 @@ class Webhook extends Controller
             if ($event['source']['groupId'] == "C715a78987e46d1ffde053bda1a4de65c") {
                 // Timers
                 if ($pieces[0] == "timers") {
-                    $raids = array("necromancer", "proteus", "gelebron", "dhiothu", "bloodthorn", "hrungnir");
-                    if (in_array($pieces[1], $raids)) {
+                    if ($pieces[1] == "raid") {
                         $message = "You are not allowed to that boss yet. *insert evil smiley*";
                     } else {
                         $lines = BossTimer::all()->where('type', $pieces[1])
-                        ->map(fn (BossTimer $timer) => sprintf('%s opens: %s and closes: %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(null, true),$timer->date->addMinutes($timer->closed)->diffForHumans(null, true)));
+                        ->map(fn (BossTimer $timer) => sprintf('%s opens: %s - closes: %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(null, true),$timer->date->addMinutes($timer->closed)->diffForHumans(null, true)));
                         
                         $message = $lines->isEmpty()
                             ? 'No timers.'
                             : $lines->join("\n");
                     }
                 } else if ($pieces[0] == "reset") {
-                    if (in_array($pieces[1], $raids)) {
+                    if ($pieces[1] == "raid") {
                         $message = "You are not allowed to that boss yet. *insert evil smiley*";
                     } else {
                         $timer = BossTimer::query()->firstWhere('name', $pieces[1]);
@@ -74,7 +73,7 @@ class Webhook extends Controller
                 // Raid Timers
                 if ($pieces[0] == "timers") {
                     $lines = BossTimer::all()->where('type', $pieces[1])
-                    ->map(fn (BossTimer $timer) => sprintf('%s opens: %s and closes: %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(null, true),$timer->date->addMinutes($timer->closed)->diffForHumans(null, true)));
+                    ->map(fn (BossTimer $timer) => sprintf('%s opens: %s - closes: %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(null, true),$timer->date->addMinutes($timer->closed)->diffForHumans(null, true)));
                     
                     $message = $lines->isEmpty()
                         ? 'No timers.'
@@ -96,10 +95,6 @@ class Webhook extends Controller
                 return;
             }
 
-            
-
-
-            
             if ($pieces[0] == "change") {
                 $timer = BossTimer::query()->firstWhere('name', $pieces[1]);
             
