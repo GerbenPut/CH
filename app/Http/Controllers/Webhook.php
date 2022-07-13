@@ -79,27 +79,26 @@ class Webhook extends Controller
             } else if ($event['source']['groupId'] == "C89dae52ca0c01f5c46dd825c2a4eed2d") {
                 // Raid Timers
                 if ($pieces[0] == "timers") {
-                    $lines = BossTimer::all()->where('type', $pieces[1]);
-                    $newmessage = array();
-
-                    foreach ($lines as $line) {
-                        $name = $this->name;
-                        if (str_word_count($this->date->addMinutes($this->open)->diffForHumans()) == 3) {
-                            $open = "unknown";
+                    $lines = BossTimer::all()->where('type', $pieces[1])
+                        ->map(fn (BossTimer $timer) => sprintf('%s opens in %s and closes in %s', $timer->name, $timer->date->addMinutes($timer->open)->diffForHumans(),$timer->date->addMinutes($timer->closed)->diffForHumans()));
+                        
+                        if ($lines->isEmpty()) {
+                            $message = "Invalid timer type.";
                         } else {
-                            $open = implode(' ', array_slice(explode(' ', $this->date->addMinutes($this->open)->diffForHumans()), 0, 2));
+                            $newmessage = array();
+                            foreach ($lines as $msg) {
+                                $pieces = explode(' ', $msg);
+                                if ($pieces[5] == "ago" && $pieces[11] == "ago") {
+                                    array_push($newmessage, $pieces[0] . " | opens: unknown - closes: unknown");
+                                } else if ($pieces[5] == "ago") {
+                                    array_push($newmessage, $pieces[0] . " | opens: unknown - closes: " . $pieces[9] . " " . $pieces[10]);
+                                } else {
+                                    array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
+                                }
+                            }
+
+                            $message = join("\n",$newmessage);
                         }
-
-                        if (str_word_count($this->date->addMinutes($this>closed)->diffForHumans()) == 3) {
-                            $close = "unknown";
-                        } else {
-                            $close = implode(' ', array_slice(explode(' ', $this->date->addMinutes($this->closed)->diffForHumans()), 0, 2));
-                        }
-
-                        array_push($newmessage, $name . " | Open: " . $open . " - Close: " . $close);
-                    }
-
-                    $message = join("\n",$newmessage);
 
                 } else if ($pieces[0] == "reset") {
                     $timer = BossTimer::query()->firstWhere('name', $pieces[1]);
