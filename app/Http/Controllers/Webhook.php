@@ -102,7 +102,7 @@ class Webhook extends Controller
                                 if ($pieces[5] == "ago" && is_numeric((int)$pieces[9]) && $pieces[11] == "from") {
                                     array_push($newmessage, $pieces[0] . " | opens: unknown - closes: " . $pieces[9] . " " . $pieces[10]);
                                 } else if (is_numeric((int)$pieces[3])) {
-                                    if ((int)$pieces[3] <= (int)$newp[2] && $pieces[4] == "minutes"){
+                                    if ((int)$pieces[3] <= (int)$newp[2] && $pieces[4] == "minutes" && $pieces[11] != "ago"){
                                         array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
                                     }
                                 } 
@@ -135,7 +135,7 @@ class Webhook extends Controller
                                     if ($pieces[5] == "ago" && is_numeric((int)$pieces[9]) && $pieces[11] == "from") {
                                         array_push($newmessage, $pieces[0] . " | opens: unknown - closes: " . $pieces[9] . " " . $pieces[10]);
                                     } else if (is_numeric((int)$pieces[3])) {
-                                        if ((int)$pieces[3] <= (int)$newp[1] && $pieces[4] == "minutes"){
+                                        if ((int)$pieces[3] <= (int)$newp[1] && $pieces[4] == "minutes" && $pieces[11] != "ago"){
                                             array_push($newmessage, $pieces[0] . " | opens: " . $pieces[3] . " " . $pieces[4] . " - closes: " . $pieces[10] . " " . $pieces[11]);
                                         }
                                     } 
