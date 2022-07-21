@@ -17,14 +17,16 @@ abstract class Command
     private Container $container;
     protected LINEBot $bot;
     private TextMessage $event;
+    private ?string $group;
     protected string $name;
 
-    public function __construct(Container $container, LINEBot $bot, TextMessage $event, array $args)
+    public function __construct(Container $container, LINEBot $bot, TextMessage $event, array $args, ?string $group)
     {
         $this->args = $args;
         $this->bot = $bot;
         $this->container = $container;
         $this->event = $event;
+        $this->group = $group;
     }
 
     final public function __invoke(): void
@@ -33,6 +35,7 @@ abstract class Command
             $this->container->call([$this, 'handle'], [
                 'args' => $this->args,
                 'event' => $this->event,
+                'group' => $this->group,
                 'command' => Parser::parse($this->event->getText()),
             ]);
         } catch (ModelNotFoundException $exception) {

@@ -30,7 +30,8 @@ class RunCommand
             return;
         }
 
-        $commands = $this->getCommands($groupId);
+        $group = $this->getGroup($groupId);
+        $commands = $this->getCommands($group);
 
         if (count($commands) === 0) {
             return;
@@ -39,9 +40,10 @@ class RunCommand
         $words = preg_split('/\s+/', $event->getText(), flags: PREG_SPLIT_NO_EMPTY);
 
         $command = collect($commands)
-            ->map(function (string $class) use ($event, $words) {
+            ->map(function (string $class) use ($event, $group, $words) {
                 return $this->container->make($class, [
                     'event' => $event,
+                    'group' => $group,
                     'args' => array_slice($words, 1),
                 ]);
             })
@@ -55,23 +57,29 @@ class RunCommand
     }
 
     /**
-     * @param string $groupId
+     * @param string|null $group
      * @return array<int, class-string<\App\Support\Commands\Command>>
      */
-    private function getCommands(string $groupId): array
+    private function getCommands(?string $group): array
+    {
+        if ($group === null) {
+            return config('line.commands._', []);
+        }
+
+        return array_merge(
+            config('line.commands._', []),
+            config('line.commands.' . $group, []),
+        );
+    }
+
+    private function getGroup(string $groupId): ?string
     {
         static $groupIds;
         $groupIds ??= config('line.group_ids');
 
         $name = array_search($groupId, $groupIds);
 
-        if ($name === false) {
-            return config('line.commands._', []);
-        }
+        return $name === false ? null : $name;
 
-        return array_merge(
-            config('line.commands._', []),
-            config('line.commands.' . $name, []),
-        );
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Support\Commands;
 
-use LINE\LINEBot\Event\MessageEvent\TextMessage;
 use App\Models\BossTimer;
 use Illuminate\Database\Eloquent\Builder;
 use Carbon\CarbonInterface;
@@ -11,9 +10,9 @@ class TimersCommand extends Command
 {
     protected string $name = 'timers';
 
-    public function handle(TextMessage $event, array $args): void
+    public function handle(array $args, ?string $group): void
     {
-        if (isset($args[0]) && $args[0] == "raid") {
+        if (isset($args[0]) && $args[0] == 'raid' && $group === 'timers') {
             $this->reply('You are not allowed to those bosses yet. *insert evil smiley*');
 
             return;

@@ -2,22 +2,24 @@
 
 namespace App\Support\Commands;
 
-use LINE\LINEBot\Event\MessageEvent\TextMessage;
 use App\Models\BossTimer;
 use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Builder;
 
 class DueCommand extends Command
 {
     protected string $name = 'due';
 
-    public function handle(TextMessage $event, array $args): void
+    public function handle(array $args, ?string $group): void
     {
         $advance = isset($args[0]) && ctype_digit($args[0])
             ? intval($args[0])
             : 30;
 
         $pastTimers = BossTimer::query()
-            ->where('type', '!=' , 'raid')
+            ->when($group === 'timers', function (Builder $builder) {
+                $builder->where('type', '!=' , 'raid');
+            })
             ->get()
             ->filter(function (BossTimer $timer) use ($advance) {
                 return $timer->date->addMinutes($timer->open)->subMinutes($advance + 1)->lessThanOrEqualTo(now())
