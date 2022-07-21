@@ -8,6 +8,8 @@ use Carbon\CarbonInterface;
 
 class ChangeCommand extends Command
 {
+    protected string $name = 'change';
+
     public function handle(TextMessage $event, array $args): void
     {
         if (!isset($args[0])) {

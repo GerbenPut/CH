@@ -17,6 +17,7 @@ abstract class Command
     private Container $container;
     protected LINEBot $bot;
     private TextMessage $event;
+    protected string $name;
 
     public function __construct(Container $container, LINEBot $bot, TextMessage $event, array $args)
     {
@@ -52,5 +53,10 @@ abstract class Command
         return $this->bot
             ->replyMessage($this->event->getReplyToken(), $messageBuilder)
             ->isSucceeded();
+    }
+
+    final public function shouldRun(string $command): bool
+    {
+        return Str::is($this->name, $command);
     }
 }

@@ -7,6 +7,8 @@ use App\Models\BossTimer;
 
 class AdjustCommand extends Command
 {
+    protected string $name = 'adjust';
+
     public function handle(TextMessage $event, array $args): void
     {
         if (!isset($args[0])) {

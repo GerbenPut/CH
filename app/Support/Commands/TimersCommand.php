@@ -9,6 +9,8 @@ use Carbon\CarbonInterface;
 
 class TimersCommand extends Command
 {
+    protected string $name = 'timers';
+
     public function handle(TextMessage $event, array $args): void
     {
         if (isset($args[0]) && $args[0] == "raid") {

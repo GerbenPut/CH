@@ -7,6 +7,8 @@ use App\Models\BossTimer;
 
 class ResetCommand extends Command
 {
+    protected string $name = 'reset';
+
     public function handle(TextMessage $event, array $args): void
     {
         if (count($args) === 0) {

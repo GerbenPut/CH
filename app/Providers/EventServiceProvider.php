@@ -6,7 +6,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use LINE\LINEBot\Event\MessageEvent\TextMessage;
-use App\Listeners\DetermineCommand;
+use App\Listeners\RunCommand;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -20,7 +20,7 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         TextMessage::class => [
-            DetermineCommand::class,
+            RunCommand::class,
         ],
     ];
 

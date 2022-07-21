@@ -8,6 +8,8 @@ use Carbon\CarbonInterface;
 
 class DueCommand extends Command
 {
+    protected string $name = 'due';
+
     public function handle(TextMessage $event, array $args): void
     {
         $advance = isset($args[0]) && ctype_digit($args[0])

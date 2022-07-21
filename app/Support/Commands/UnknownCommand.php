@@ -7,6 +7,8 @@ use App\Models\BossTimer;
 
 class UnknownCommand extends Command
 {
+    protected string $name = 'unknown';
+
     public function handle(TextMessage $event): void
     {
         $pastTimers = BossTimer::query()
