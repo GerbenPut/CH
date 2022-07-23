@@ -2,14 +2,14 @@
 
 namespace App\Support\Commands;
 
-use LINE\LINEBot\Event\MessageEvent\TextMessage;
-use App\Models\BossTimer;
+use App\Models\Boss;
+use Illuminate\Support\Facades\Date;
 
 class AdjustCommand extends Command
 {
     protected string $name = 'adjust';
 
-    public function handle(TextMessage $event, array $args): void
+    public function handle(array $args): void
     {
         if (!isset($args[0])) {
             $this->reply('Please specify a boss name to change.');
@@ -35,14 +35,19 @@ class AdjustCommand extends Command
 
         $amount = array_shift($args);
 
-        $timer = BossTimer::query()
+        /** @var \App\Models\Boss $boss */
+        $boss = Boss::query()
             ->where('name', $name)
             ->firstOrFail();
 
-        $timer->date = $mode === 'sub'
-            ? $timer->date->subMinutes($amount)
-            : $timer->date->addMinutes($amount);
-        $timer->save();
+        $resetAt = $boss->latestReset->reset_at ?? Date::now();
+
+        $boss->latestReset()->create([
+            'adjust' => true,
+            'reset_at' => $mode === 'sub'
+                ? $resetAt->subMinutes($amount)
+                : $resetAt->addMinutes($amount)
+        ]);
 
         $this->reply('Boss timer adjusted.');
     }

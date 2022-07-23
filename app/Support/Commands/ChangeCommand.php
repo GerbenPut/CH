@@ -2,15 +2,13 @@
 
 namespace App\Support\Commands;
 
-use LINE\LINEBot\Event\MessageEvent\TextMessage;
-use App\Models\BossTimer;
-use Carbon\CarbonInterface;
+use App\Models\Boss;
 
 class ChangeCommand extends Command
 {
     protected string $name = 'change';
 
-    public function handle(TextMessage $event, array $args): void
+    public function handle(array $args): void
     {
         if (!isset($args[0])) {
             $this->reply('Please specify a boss name to change.');
@@ -28,13 +26,14 @@ class ChangeCommand extends Command
             return;
         }
 
-        $timer = BossTimer::query()
+        /** @var \App\Models\Boss $boss */
+        $boss = Boss::query()
             ->where('name', $name)
             ->firstOrFail();
 
-        $timer->open = intval($args[0]);
-        $timer->closed = intval($args[1]);
-        $timer->save();
+        $boss->open = intval($args[0]);
+        $boss->closed = intval($args[1]);
+        $boss->save();
 
         $this->reply('Boss timer changed.');
     }

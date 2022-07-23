@@ -13,14 +13,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('boss_timers', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('type');
-            $table->datetime('date');
-            $table->unsignedInteger('open');
-            $table->unsignedInteger('closed');
-            $table->timestamps();
+        Schema::table('bosses', function (Blueprint $table) {
+            $table->unsignedTinyInteger('worth')->after('closed');
         });
     }
 
@@ -31,6 +25,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('boss_timers');
+        Schema::table('bosses', function (Blueprint $table) {
+            $table->dropColumn('worth');
+        });
     }
 };

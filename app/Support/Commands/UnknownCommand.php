@@ -2,21 +2,27 @@
 
 namespace App\Support\Commands;
 
-use LINE\LINEBot\Event\MessageEvent\TextMessage;
-use App\Models\BossTimer;
+use App\Enums\BossType;
+use App\Models\BossSchedule;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Date;
 
 class UnknownCommand extends Command
 {
     protected string $name = 'unknown';
 
-    public function handle(TextMessage $event): void
+    public function handle(): void
     {
-        $pastTimers = BossTimer::query()
-            ->where('type', '!=' , 'raid')
-            ->get()
-            ->filter(function (BossTimer $timer) {
-                return $timer->date->addMinutes($timer->open)->isPast()
-                     && $timer->date->addMinutes($timer->closed)->isPast();
+        $pastTimers = BossSchedule::query()
+            ->where('type', '!=', BossType::Raid)
+            ->where(function (Builder $builder) {
+                $builder
+                    ->whereNull('reset_at')
+                    ->orWhere(function (Builder $builder) {
+                        $builder
+                            ->where('open', '<', Date::now())
+                            ->where('closed', '<', Date::now());
+                    });
             })
             ->pluck('name');
 

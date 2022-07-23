@@ -2,14 +2,15 @@
 
 namespace App\Support\Commands;
 
-use LINE\LINEBot\Event\MessageEvent\TextMessage;
-use App\Models\BossTimer;
+use App\Enums\BossType;
+use App\Models\Boss;
+use Illuminate\Support\Facades\Date;
 
 class ResetCommand extends Command
 {
     protected string $name = 'reset';
 
-    public function handle(TextMessage $event, array $args): void
+    public function handle(array $args, ?string $group): void
     {
         if (count($args) === 0) {
             $this->reply('Please specify a boss.');
@@ -17,21 +18,22 @@ class ResetCommand extends Command
             return;
         }
 
-        $raids = ['necromancer', 'proteus', 'gelebron', 'dhiothu', 'bloodthorn', 'hrungnir', 'mordris'];
+        /** @var \App\Models\Boss $boss */
+        $boss = Boss::query()
+            ->where('name', $args[0])
+            ->firstOrFail();
 
-        if (in_array($args[0], $raids)) {
+        if ($group === 'timers' && $boss->type === BossType::Raid) {
             $this->reply('You are not allowed to those bosses yet. *insert evil smiley*');
 
             return;
         }
 
-        $timer = BossTimer::query()
-            ->where('name', $args[0])
-            ->firstOrFail();
+        $boss->latestReset()->create([
+            'adjust' => false,
+            'reset_at' => Date::now(),
+        ]);
 
-        $timer->date = now();
-        $timer->save();
-
-        $this->reply($timer->name . ' has been reset.');
+        $this->reply($boss->name . ' has been reset.');
     }
 }

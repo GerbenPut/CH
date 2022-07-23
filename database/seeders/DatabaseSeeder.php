@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\BossTimer;
+use App\Models\Boss;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        BossTimer::query()->create([
+        Boss::query()->create([
             'name' => 'test-boss',
             'type' => 'normal',
             'date' => now(),

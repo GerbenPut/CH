@@ -2,12 +2,17 @@
 
 namespace App\Support\Commands;
 
-use App\Models\BossTimer;
-use Carbon\CarbonInterface;
+use App\Enums\BossType;
+use App\Models\BossSchedule;
+use App\Support\Concerns\FormatsDates;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Date;
 
 class DueCommand extends Command
 {
+    use FormatsDates;
+
     protected string $name = 'due';
 
     public function handle(array $args, ?string $group): void
@@ -16,45 +21,25 @@ class DueCommand extends Command
             ? intval($args[0])
             : 30;
 
-        $pastTimers = BossTimer::query()
+        BossSchedule::query()
             ->when($group === 'timers', function (Builder $builder) {
-                $builder->where('type', '!=' , 'raid');
+                $builder->where('type', '!=', BossType::Raid);
             })
+            ->where('open', '<=', Date::now()->addMinutes($advance))
+            ->where('closed', '>=', Date::now())
             ->get()
-            ->filter(function (BossTimer $timer) use ($advance) {
-                return $timer->date->addMinutes($timer->open)->subMinutes($advance + 1)->lessThanOrEqualTo(now())
-                     && $timer->date->addMinutes($timer->closed)->greaterThanOrEqualTo(now());
-            })
-            ->map(function (BossTimer $timer) {
+            ->map(function (BossSchedule $schedule) {
                 return sprintf(
                     '%s | opens: %s - closes: %s',
-                    $timer->name,
-                    $this->date($timer->date->addMinutes($timer->open)),
-                    $this->date($timer->date->addMinutes($timer->closed)),
+                    $schedule->name,
+                    $this->date($schedule->open),
+                    $this->date($schedule->closed),
                 );
+            })
+            ->whenNotEmpty(function (Collection $lines) {
+                $this->reply($lines->implode(', '));
+            }, function () {
+                $this->reply('No due bosses.');
             });
-
-        if ($pastTimers->isEmpty()) {
-            $this->reply('No due bosses.');
-
-            return;
-        }
-
-        $this->reply($pastTimers->implode(', '));
-    }
-
-    private function date(CarbonInterface $date): string
-    {
-        $now = now();
-
-        $hourDiff = $now->diffInHours($date, false);
-
-        if ($hourDiff > 0) {
-            return $hourDiff . ' hours';
-        }
-
-        $minuteDiff = $now->diffInMinutes($date, false);
-
-        return $minuteDiff < 0 ? 'unknown' : $minuteDiff . ' minutes';
     }
 }
