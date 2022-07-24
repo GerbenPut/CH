@@ -28,9 +28,12 @@ class IncrementKillCommand extends Command
             ->where('name', $args[0])
             ->firstOrFail();
 
-        /** @var \App\Models\KillCount $attend */
-        $attend = $player->killCounts()->firstOrNew(['boss_id' => $boss->id]);
+        /** @var \App\Models\Attend $attend */
+        $attend = $player->attends()
+            ->whereBelongsTo($boss)
+            ->firstOrNew();
 
+        $attend->camps ??= 0;
         $attend->kills++;
         $attend->boss()->associate($boss);
         $attend->save();

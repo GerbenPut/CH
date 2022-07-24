@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Models\Boss $boss
  * @property-read \App\Models\Player $player
  */
-class KillCount extends Model
+class Attend extends Model
 {
     protected $casts = [
         'boss_id' => 'int',

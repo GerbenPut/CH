@@ -2,7 +2,7 @@
 
 namespace App\Support\Commands;
 
-use App\Models\KillCount;
+use App\Models\Attend;
 use App\Models\Player;
 use Illuminate\Support\Collection;
 
@@ -22,12 +22,12 @@ class AttendsCommand extends Command
             ->where('name', $args[0])
             ->firstOrFail();
 
-        KillCount::query()
+        Attend::query()
             ->with(['boss'])
             ->whereBelongsTo($player)
             ->orderByDesc('kills')
             ->get()
-            ->map(fn (KillCount $count) => sprintf('%s: %d', $count->boss->name, $count->kills))
+            ->map(fn (Attend $attend) => sprintf('%s: %d', $attend->boss->name, $attend->kills))
             ->whenNotEmpty(function (Collection $lines) {
                 $this->reply($lines->implode("\n"));
             });

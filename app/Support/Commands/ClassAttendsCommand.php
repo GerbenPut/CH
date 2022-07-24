@@ -40,7 +40,7 @@ class ClassAttendsCommand extends Command
 
         Player::query()
             ->withSum([
-                'killCounts as kills' => function (Builder $builder) use ($boss) {
+                'attends as kills' => function (Builder $builder) use ($boss) {
                     $builder->when($boss !== null, fn (Builder $builder) => $builder->whereBelongsTo($boss));
                 },
             ], 'kills')

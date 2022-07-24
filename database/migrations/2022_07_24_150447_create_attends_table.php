@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kill_counts', function (Blueprint $table) {
+        Schema::create('attends', function (Blueprint $table) {
             $table->id();
             $table->foreignId('player_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('boss_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kill_counts');
+        Schema::dropIfExists('attends');
     }
 };

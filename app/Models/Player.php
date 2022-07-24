@@ -12,8 +12,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \App\Enums\ClassType $class_type
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\KillCount> $killCounts
- * @property-read int|null $kill_counts_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Attend> $attends
+ * @property-read int|null $attends_count
  */
 class Player extends Model
 {
@@ -26,8 +26,8 @@ class Player extends Model
         'name',
     ];
 
-    public function killCounts(): HasMany
+    public function attends(): HasMany
     {
-        return $this->hasMany(KillCount::class);
+        return $this->hasMany(Attend::class);
     }
 }
