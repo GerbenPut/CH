@@ -6,6 +6,7 @@ use App\Support\Commands\ChangeCommand;
 use App\Support\Commands\ClassAttendsCommand;
 use App\Support\Commands\DueCommand;
 use App\Support\Commands\GroupIdCommand;
+use App\Support\Commands\IncrementKillCommand;
 use App\Support\Commands\RemovePlayerCommand;
 use App\Support\Commands\ResetCommand;
 use App\Support\Commands\TimersCommand;
@@ -21,6 +22,12 @@ return [
             ChangeCommand::class,
             ClassAttendsCommand::class,
             RemovePlayerCommand::class,
+        ],
+        'attends_dkp' => [
+            IncrementKillCommand::class,
+        ],
+        'attends_qkp' => [
+            IncrementKillCommand::class,
         ],
         'raid_timers' => [
             AdjustCommand::class,
