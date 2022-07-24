@@ -42,9 +42,10 @@ class RunCommand
         $command = collect($commands)
             ->map(function (string $class) use ($event, $group, $words) {
                 return $this->container->make($class, [
+                    'args' => array_slice($words, 1),
+                    'command' => $words[0],
                     'event' => $event,
                     'group' => $group,
-                    'args' => array_slice($words, 1),
                 ]);
             })
             ->first(fn (Command $command) => $command->shouldRun($words[0]));

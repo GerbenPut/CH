@@ -14,16 +14,24 @@ use Illuminate\Support\Str;
 abstract class Command
 {
     private array $args;
+    private string $command;
     private Container $container;
     protected LINEBot $bot;
     private TextMessage $event;
     private ?string $group;
     protected string $name;
 
-    public function __construct(Container $container, LINEBot $bot, TextMessage $event, array $args, ?string $group)
-    {
+    public function __construct(
+        Container $container,
+        LINEBot $bot,
+        TextMessage $event,
+        array $args,
+        ?string $group,
+        string $command,
+    ) {
         $this->args = $args;
         $this->bot = $bot;
+        $this->command = $command;
         $this->container = $container;
         $this->event = $event;
         $this->group = $group;
@@ -36,7 +44,7 @@ abstract class Command
                 'args' => $this->args,
                 'event' => $this->event,
                 'group' => $this->group,
-                'command' => Parser::parse($this->event->getText()),
+                'command' => $this->command,
             ]);
         } catch (ModelNotFoundException $exception) {
             $model = Str::of($exception->getModel())

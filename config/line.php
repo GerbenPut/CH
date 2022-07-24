@@ -3,6 +3,7 @@
 use App\Support\Commands\AddPlayerCommand;
 use App\Support\Commands\AdjustCommand;
 use App\Support\Commands\ChangeCommand;
+use App\Support\Commands\ClassAttendsCommand;
 use App\Support\Commands\DueCommand;
 use App\Support\Commands\GroupIdCommand;
 use App\Support\Commands\RemovePlayerCommand;
@@ -18,6 +19,7 @@ return [
         'admin' => [
             AddPlayerCommand::class,
             ChangeCommand::class,
+            ClassAttendsCommand::class,
             RemovePlayerCommand::class,
         ],
         'raid_timers' => [
