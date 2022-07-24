@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \App\Models\Boss $boss
+ * @property-read \App\Models\Player $player
  */
 class KillCount extends Model
 {
@@ -27,5 +28,10 @@ class KillCount extends Model
     public function boss(): BelongsTo
     {
         return $this->belongsTo(Boss::class);
+    }
+
+    public function player(): BelongsTo
+    {
+        return $this->belongsTo(Player::class);
     }
 }

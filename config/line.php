@@ -2,6 +2,7 @@
 
 use App\Support\Commands\AddPlayerCommand;
 use App\Support\Commands\AdjustCommand;
+use App\Support\Commands\AttendsCommand;
 use App\Support\Commands\ChangeCommand;
 use App\Support\Commands\ClassAttendsCommand;
 use App\Support\Commands\DueCommand;
@@ -24,9 +25,11 @@ return [
             RemovePlayerCommand::class,
         ],
         'attends_dkp' => [
+            AttendsCommand::class,
             IncrementKillCommand::class,
         ],
         'attends_qkp' => [
+            AttendsCommand::class,
             IncrementKillCommand::class,
         ],
         'raid_timers' => [
