@@ -1,9 +1,11 @@
 <?php
 
+use App\Support\Commands\AddPlayerCommand;
 use App\Support\Commands\AdjustCommand;
 use App\Support\Commands\ChangeCommand;
 use App\Support\Commands\DueCommand;
 use App\Support\Commands\GroupIdCommand;
+use App\Support\Commands\RemovePlayerCommand;
 use App\Support\Commands\ResetCommand;
 use App\Support\Commands\TimersCommand;
 use App\Support\Commands\UnknownCommand;
@@ -14,7 +16,9 @@ return [
             GroupIdCommand::class,
         ],
         'admin' => [
+            AddPlayerCommand::class,
             ChangeCommand::class,
+            RemovePlayerCommand::class,
         ],
         'raid_timers' => [
             AdjustCommand::class,
