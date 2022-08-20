@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \App\Models\Boss $boss
  * @property-read \App\Models\Player $player
+ * @property-read \App\Models\Run $run
  */
 class Attend extends Model
 {
@@ -33,5 +34,10 @@ class Attend extends Model
     public function player(): BelongsTo
     {
         return $this->belongsTo(Player::class);
+    }
+
+    public function run(): BelongsTo
+    {
+        return $this->belongsTo(Run::class);
     }
 }

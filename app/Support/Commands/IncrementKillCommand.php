@@ -5,6 +5,7 @@ namespace App\Support\Commands;
 use App\Enums\ClassType;
 use App\Models\Boss;
 use App\Models\Player;
+use App\Models\Run;
 
 class IncrementKillCommand extends Command
 {
@@ -18,6 +19,18 @@ class IncrementKillCommand extends Command
             return;
         }
 
+        $boss = array_shift($args);
+
+        if ($boss === 'camped' && count($args) >= 2) {
+            $boss = $args[0];
+            $hours = intval($args[1]);
+        }
+
+        /** @var \App\Models\Run $run */
+        $run = Run::query()
+            ->latest()
+            ->firstOrFail();
+
         /** @var \App\Models\Player $player */
         $player = Player::query()
             ->where('name', $command)
@@ -25,19 +38,31 @@ class IncrementKillCommand extends Command
 
         /** @var \App\Models\Boss $boss */
         $boss = Boss::query()
-            ->where('name', $args[0])
+            ->where('name', $boss)
             ->firstOrFail();
 
         /** @var \App\Models\Attend $attend */
         $attend = $player->attends()
             ->whereBelongsTo($boss)
+            ->whereBelongsTo($run)
             ->firstOrNew();
 
         $attend->camps ??= 0;
-        $attend->kills++;
+        $attend->kills ??= 0;
+
+        if (isset($hours)) {
+            $attend->camps += $hours;
+        } else {
+            $attend->kills++;
+        }
+
         $attend->boss()->associate($boss);
         $attend->save();
 
-        $this->reply('Kills incremented');
+        if (isset($hours)) {
+            $this->reply('Camps incremented');
+        } else {
+            $this->reply('Kills incremented');
+        }
     }
 }
