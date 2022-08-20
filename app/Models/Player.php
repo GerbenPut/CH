@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Attend> $attends
  * @property-read int|null $attends_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PointsPerRun> $pointsPerRun
+ * @property-read int|null $points_per_run_count
  */
 class Player extends Model
 {
@@ -29,5 +31,10 @@ class Player extends Model
     public function attends(): HasMany
     {
         return $this->hasMany(Attend::class);
+    }
+
+    public function pointsPerRun(): HasMany
+    {
+        return $this->hasMany(PointsPerRun::class);
     }
 }

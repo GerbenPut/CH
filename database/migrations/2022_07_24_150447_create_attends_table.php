@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('player_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('boss_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('run_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->unsignedBigInteger('kills');
             $table->unsignedBigInteger('camps');
             $table->timestamps();
