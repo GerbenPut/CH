@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::table('bosses', function (Blueprint $table) {
             $table->unsignedTinyInteger('worth')->after('closed');
+            $table->string('points_type')->after('worth');
         });
     }
 
@@ -26,7 +27,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('bosses', function (Blueprint $table) {
-            $table->dropColumn('worth');
+            $table->dropColumn(['points_type', 'worth']);
         });
     }
 };

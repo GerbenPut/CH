@@ -7,7 +7,6 @@ use LINE\LINEBot\Event\MessageEvent\TextMessage;
 use Illuminate\Contracts\Container\Container;
 use LINE\LINEBot\MessageBuilder;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
-use Illuminate\Console\Parser;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
 

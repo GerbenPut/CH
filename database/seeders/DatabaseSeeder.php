@@ -8,6 +8,7 @@ use App\Models\Player;
 use App\Enums\BossType;
 use App\Enums\ClassType;
 use App\Models\Run;
+use App\Enums\PointsType;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,6 +26,7 @@ class DatabaseSeeder extends Seeder
             'closed' => 190,
             'worth' => 10,
             'camp_worth' => 5,
+            'points_type' => PointsType::DKP,
         ]);
 
         Player::query()->create([

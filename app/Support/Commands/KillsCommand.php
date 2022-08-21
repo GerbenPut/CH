@@ -8,13 +8,23 @@ use App\Models\Boss;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
+use App\Enums\PointsType;
+use App\Models\Scopes\PointTypeScope;
 
 class KillsCommand extends Command
 {
     protected string $name = 'kills';
 
-    public function handle(array $args): void
+    public function handle(array $args, ?string $group): void
     {
+        if ($group !== null) {
+            $pointsType = $group === 'attends_dkp'
+                ? PointsType::DKP
+                : PointsType::QKP;
+
+            Boss::addGlobalScope(new PointTypeScope($pointsType));
+        }
+
         if (count($args) < 1) {
             $this->reply('Please specify a player and optional boss name.');
 
@@ -32,7 +42,11 @@ class KillsCommand extends Command
         }
 
         $attends = Attend::query()
-            ->when(isset($boss), fn (Builder $builder) => $builder->whereBelongsTo($boss))
+            ->when(
+                isset($boss),
+                fn (Builder $builder) => $builder->whereBelongsTo($boss),
+                fn (Builder $builder) => $builder->whereHas('boss'),
+            )
             ->whereBelongsTo($player)
             ->get();
 
