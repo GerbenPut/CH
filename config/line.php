@@ -4,7 +4,6 @@ use App\Support\Commands\AddPlayerCommand;
 use App\Support\Commands\AdjustCommand;
 use App\Support\Commands\KillsCommand;
 use App\Support\Commands\ChangeCommand;
-use App\Support\Commands\ClassAttendsCommand;
 use App\Support\Commands\DueCommand;
 use App\Support\Commands\GroupIdCommand;
 use App\Support\Commands\IncrementKillCommand;
@@ -12,6 +11,7 @@ use App\Support\Commands\RemovePlayerCommand;
 use App\Support\Commands\ResetCommand;
 use App\Support\Commands\TimersCommand;
 use App\Support\Commands\UnknownCommand;
+use App\Support\Commands\AttendsCommand;
 
 return [
     'commands' => [
@@ -21,14 +21,15 @@ return [
         'admin' => [
             AddPlayerCommand::class,
             ChangeCommand::class,
-            ClassAttendsCommand::class,
             RemovePlayerCommand::class,
         ],
         'attends_dkp' => [
+            AttendsCommand::class,
             KillsCommand::class,
             IncrementKillCommand::class,
         ],
         'attends_qkp' => [
+            AttendsCommand::class,
             KillsCommand::class,
             IncrementKillCommand::class,
         ],

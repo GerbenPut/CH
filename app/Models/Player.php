@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $attends_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PointsPerRun> $pointsPerRun
  * @property-read int|null $points_per_run_count
+ * @property-read float|null $points_per_run_sum_points
  */
 class Player extends Model
 {
