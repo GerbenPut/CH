@@ -8,8 +8,6 @@ use App\Models\Boss;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
-use App\Enums\PointsType;
-use App\Models\Scopes\PointTypeScope;
 
 class KillsCommand extends Command
 {
@@ -18,11 +16,11 @@ class KillsCommand extends Command
     public function handle(array $args, ?string $group): void
     {
         if ($group !== null) {
-            $pointsType = $group === 'attends_dkp'
-                ? PointsType::DKP
-                : PointsType::QKP;
+            // $pointsType = $group === 'attends_dkp'
+            //     ? PointsType::DKP
+            //     : PointsType::QKP;
 
-            Boss::addGlobalScope(new PointTypeScope($pointsType));
+            // Boss::addGlobalScope(new PointTypeScope($pointsType));
         }
 
         if (count($args) < 1) {

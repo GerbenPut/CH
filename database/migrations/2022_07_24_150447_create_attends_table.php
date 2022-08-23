@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('attends', function (Blueprint $table) {
             $table->id();
             $table->foreignId('player_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('boss_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('boss_chat_id')->constrained('boss_chat')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('run_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->unsignedBigInteger('kills');
             $table->unsignedBigInteger('camps');

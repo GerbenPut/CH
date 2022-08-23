@@ -8,8 +8,6 @@ use App\Models\Boss;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\PointsPerRun;
 use App\Enums\ClassType;
-use App\Enums\PointsType;
-use App\Models\Scopes\PointTypeScope;
 
 class AttendsCommand extends Command
 {
@@ -18,11 +16,11 @@ class AttendsCommand extends Command
     public function handle(array $args, ?string $group): void
     {
         if ($group !== null) {
-            $pointsType = $group === 'attends_dkp'
-                ? PointsType::DKP
-                : PointsType::QKP;
+            // $pointsType = $group === 'attends_dkp'
+            //     ? PointsType::DKP
+            //     : PointsType::QKP;
 
-            Boss::addGlobalScope(new PointTypeScope($pointsType));
+            // Boss::addGlobalScope(new PointTypeScope($pointsType));
         }
 
         if ($args === []) {

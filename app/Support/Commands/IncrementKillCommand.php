@@ -2,12 +2,9 @@
 
 namespace App\Support\Commands;
 
-use App\Enums\ClassType;
 use App\Models\Boss;
 use App\Models\Player;
 use App\Models\Run;
-use App\Enums\PointsType;
-use App\Models\Scopes\PointTypeScope;
 
 class IncrementKillCommand extends Command
 {
@@ -16,11 +13,11 @@ class IncrementKillCommand extends Command
     public function handle(array $args, string $command, ?string $group): void
     {
         if ($group !== null) {
-            $pointsType = $group === 'attends_dkp'
-                ? PointsType::DKP
-                : PointsType::QKP;
+            // $pointsType = $group === 'attends_dkp'
+            //     ? PointsType::DKP
+            //     : PointsType::QKP;
 
-            Boss::addGlobalScope(new PointTypeScope($pointsType));
+            // Boss::addGlobalScope(new PointTypeScope($pointsType));
         }
 
         if (count($args) < 1) {

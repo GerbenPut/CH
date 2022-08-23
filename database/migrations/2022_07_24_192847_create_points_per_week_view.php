@@ -18,10 +18,10 @@ SELECT
 	player_id,
 	boss_id,
 	run_id,
-	SUM(kills * bosses.worth + camps * bosses.camp_worth) * POWER(.8, runs.times_decayed) AS points
+	SUM(kills * boss_chat.kill_worth + camps * boss_chat.camp_worth) * POWER(.8, runs.times_decayed) AS points
 FROM
 	attends
-	JOIN bosses ON bosses.id = attends.boss_id
+	JOIN boss_chat ON boss_chat.id = attends.boss_chat_id
 	JOIN runs ON runs.id = attends.run_id
 GROUP BY
 	player_id,

@@ -13,9 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('bosses', function (Blueprint $table) {
-            $table->unsignedTinyInteger('worth')->after('closed');
-            $table->string('points_type')->after('worth');
+        Schema::create('chats', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->timestamps();
         });
     }
 
@@ -26,8 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('bosses', function (Blueprint $table) {
-            $table->dropColumn(['points_type', 'worth']);
-        });
+        Schema::dropIfExists('chats');
     }
 };

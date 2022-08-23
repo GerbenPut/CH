@@ -8,27 +8,27 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property int $id
  * @property int $player_id
- * @property int $boss_id
+ * @property int $boss_chat_id
  * @property int $kills
  * @property int $camps
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \App\Models\Boss $boss
+ * @property-read \App\Models\BossChat $bossChat
  * @property-read \App\Models\Player $player
  * @property-read \App\Models\Run $run
  */
 class Attend extends Model
 {
     protected $casts = [
-        'boss_id' => 'int',
+        'boss_chat_id' => 'int',
         'camps' => 'int',
         'kills' => 'int',
         'player_id' => 'int',
     ];
 
-    public function boss(): BelongsTo
+    public function bossChat(): BelongsTo
     {
-        return $this->belongsTo(Boss::class);
+        return $this->belongsTo(BossChat::class);
     }
 
     public function player(): BelongsTo

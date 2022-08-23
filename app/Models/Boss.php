@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Enums\BossType;
-use App\Enums\PointsType;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -13,10 +13,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property \App\Enums\BossType $type
  * @property int $open
  * @property int $closed
- * @property int $worth
- * @property \App\Enums\PointsType $points_type
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Chat> $chats
  * @property-read \App\Models\BossReset|null $latestReset
  */
 class Boss extends Model
@@ -24,10 +23,17 @@ class Boss extends Model
     public $casts = [
         'closed' => 'int',
         'open' => 'int',
-        'points_type' => PointsType::class,
         'type' => BossType::class,
         'worth' => 'int',
     ];
+
+    public function chats(): BelongsToMany
+    {
+        return $this->belongsToMany(Chat::class)
+            ->using(BossChat::class)
+            ->withPivot(['camp_worth', 'kill_worth'])
+            ->withTimestamps();
+    }
 
     public function latestReset(): HasOne
     {
