@@ -8,6 +8,8 @@ use App\Models\Boss;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\PointsPerRun;
 use App\Enums\ClassType;
+use App\Models\Chat;
+use App\Models\BossChat;
 
 class AttendsCommand extends Command
 {
@@ -15,16 +17,16 @@ class AttendsCommand extends Command
 
     public function handle(array $args, ?string $group): void
     {
-        if ($group !== null) {
-            // $pointsType = $group === 'attends_dkp'
-            //     ? PointsType::DKP
-            //     : PointsType::QKP;
-
-            // Boss::addGlobalScope(new PointTypeScope($pointsType));
+        if ($group === null) {
+            return;
         }
 
+        $chat = $group === 'attends_dkp'
+            ? Chat::DKP()
+            : Chat::QKP();
+
         if ($args === []) {
-            $this->top(10);
+            $this->top(10, chat: $chat);
 
             return;
         }
@@ -34,6 +36,7 @@ class AttendsCommand extends Command
         /** @var \App\Models\Boss|null $boss */
         $boss = Boss::query()
             ->where('name', $name)
+            ->whereHas('chats', fn (Builder $builder) => $builder->whereKey($chat))
             ->first();
 
         if ($boss !== null) {
@@ -41,7 +44,12 @@ class AttendsCommand extends Command
                 ? ClassType::tryFrom($args[1])
                 : null;
 
-            $this->top(10, boss: $boss, classType: $classType);
+            $bossChat = BossChat::query()
+                ->whereBelongsTo($boss)
+                ->whereBelongsTo($chat)
+                ->firstOrFail();
+
+            $this->top(10, bossChat: $bossChat, classType: $classType);
 
             return;
         }
@@ -53,13 +61,13 @@ class AttendsCommand extends Command
 
         if ($player !== null) {
             $bosses = PointsPerRun::query()
-                ->with(['boss'])
-                ->whereHas('boss')
+                ->with(['bossChat.boss'])
                 ->whereBelongsTo($player)
+                ->whereHas('bossChat.chat', fn (Builder $builder) => $builder->whereKey($chat))
                 ->get()
-                ->groupBy('boss_id')
+                ->groupBy('bossChat.boss_id')
                 ->map(fn (Collection $pointsPerRuns) => [
-                    'boss' => $pointsPerRuns->first()->boss,
+                    'boss' => $pointsPerRuns->first()->bossChat->boss,
                     'points' => $pointsPerRuns->sum('points'),
                 ])
                 ->sortByDesc('points');
@@ -74,18 +82,18 @@ class AttendsCommand extends Command
         }
     }
 
-    private function top(int $top, ?Boss $boss = null, ?ClassType $classType = null): void
+    private function top(int $top, ?BossChat $bossChat = null, ?ClassType $classType = null, ?Chat $chat = null): void
     {
         Player::query()
             ->withCasts([
                 'points_per_run_sum_points' => 'float',
             ])
             ->withSum([
-                'pointsPerRun' => function (Builder $builder) use ($boss, $classType) {
+                'pointsPerRun' => function (Builder $builder) use ($chat, $bossChat, $classType) {
                     $builder
-                        ->whereHas('boss')
-                        ->when(isset($boss), fn (Builder $builder) => $builder->whereBelongsTo($boss))
-                        ->when(isset($classType), fn (Builder $builder) => $builder->whereRelation('player', 'class_type', $classType));
+                        ->when(isset($bossChat), fn (Builder $builder) => $builder->whereBelongsTo($bossChat))
+                        ->when(isset($classType), fn (Builder $builder) => $builder->whereRelation('player', 'class_type', $classType))
+                        ->when(isset($chat), fn (Builder $builder) => $builder->whereRelation('bossChat', 'chat_id', $chat->id));
                 },
             ], 'points')
             ->orderByDesc('points_per_run_sum_points')

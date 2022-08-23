@@ -16,7 +16,7 @@ return new class extends Migration
 CREATE VIEW points_per_run AS
 SELECT
 	player_id,
-	boss_id,
+	boss_chat_id,
 	run_id,
 	SUM(kills * boss_chat.kill_worth + camps * boss_chat.camp_worth) * POWER(.8, runs.times_decayed) AS points
 FROM
@@ -26,7 +26,7 @@ FROM
 GROUP BY
 	player_id,
 	run_id,
-	boss_id;
+	boss_chat_id;
 SQL);
     }
 
