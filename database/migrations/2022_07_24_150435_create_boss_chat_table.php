@@ -13,13 +13,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('boss_timers', function (Blueprint $table) {
+        Schema::create('boss_chat', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('type');
-            $table->datetime('date');
-            $table->unsignedInteger('open');
-            $table->unsignedInteger('closed');
+            $table->foreignId('boss_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('chat_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->unsignedTinyInteger('kill_worth');
+            $table->unsignedTinyInteger('camp_worth');
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('boss_timers');
+        Schema::dropIfExists('boss_chat');
     }
 };

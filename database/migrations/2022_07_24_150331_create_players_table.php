@@ -13,13 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('boss_timers', function (Blueprint $table) {
+        Schema::create('players', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('type');
-            $table->datetime('date');
-            $table->unsignedInteger('open');
-            $table->unsignedInteger('closed');
+            $table->string('class_type');
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('boss_timers');
+        Schema::dropIfExists('players');
     }
 };

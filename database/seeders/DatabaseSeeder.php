@@ -2,8 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Boss;
+use App\Models\Player;
+use App\Enums\BossType;
+use App\Enums\ClassType;
+use App\Models\Run;
+use App\Models\Chat;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,13 +17,33 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        $bossOne = Boss::query()->create([
+            'name' => 'test-boss',
+            'type' => BossType::DragonLord,
+            'open' => 180,
+            'closed' => 190,
+        ]);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $DKP = Chat::query()->create([
+            'name' => 'DKP',
+        ]);
+
+        $QKP = Chat::query()->create([
+            'name' => 'QKP',
+        ]);
+
+        $bossOne->chats()->attach($DKP, ['kill_worth' => 10, 'camp_worth' => 5]);
+        $bossOne->chats()->attach($QKP, ['kill_worth' => 5, 'camp_worth' => 2]);
+
+        Player::query()->create([
+            'name' => 'noel',
+            'class_type' => ClassType::Mage,
+        ]);
+
+        Run::query()->create([
+            'times_decayed' => 0,
+        ]);
     }
 }
