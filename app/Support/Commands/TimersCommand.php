@@ -39,8 +39,8 @@ class TimersCommand extends Command
                 return sprintf(
                     '%s | opens: %s - closes: %s',
                     $schedule->name,
-                    $this->date($schedule->open),
-                    $this->date($schedule->closed),
+                    $this->date($timer->date->addMinutes($timer->open)),
+                    $this->date($timer->date->addMinutes($timer->closed)),
                 );
             })
             ->whenNotEmpty(function (Collection $lines) {
