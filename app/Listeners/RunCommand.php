@@ -48,7 +48,7 @@ class RunCommand
                     'group' => $group,
                 ]);
             })
-            ->first(fn (Command $command) => $command->shouldRun($words[0]));
+            ->first(fn (Command $command) => $command->shouldRun(mb_strtolower($words[0])));
 
         if ($command === null) {
             return;
