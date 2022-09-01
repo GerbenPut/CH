@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class BossSchedule extends Model
 {
     protected $casts = [
+        'closed' => 'datetime',
+        'open' => 'datetime',
         'reset_at' => 'datetime',
         'type' => BossType::class,
     ];
