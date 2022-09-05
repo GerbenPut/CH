@@ -7,8 +7,12 @@ use Illuminate\Support\Facades\Date;
 
 trait FormatsDates
 {
-    protected function date(CarbonInterface $date): string
+    protected function date(?CarbonInterface $date): ?string
     {
+        if ($date === null) {
+            return null;
+        }
+
         $now = Date::now();
 
         $hourDiff = $now->diffInHours($date, false);

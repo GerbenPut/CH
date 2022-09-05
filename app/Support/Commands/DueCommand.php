@@ -32,8 +32,8 @@ class DueCommand extends Command
                 return sprintf(
                     '%s | opens: %s - closes: %s',
                     $schedule->name,
-                    $this->date($schedule->open),
-                    $this->date($schedule->closed),
+                    $this->date($schedule->open) ?? 'unknown',
+                    $this->date($schedule->closed) ?? 'unknown',
                 );
             })
             ->whenNotEmpty(function (Collection $lines) {
