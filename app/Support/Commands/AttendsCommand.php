@@ -33,6 +33,25 @@ class AttendsCommand extends Command
 
         $name = $args[0];
 
+
+        $classType = ClassType::tryFrom($name);
+
+        if ($classType !== null) {
+            Player::query()
+                ->where('class_type', $classType)
+                ->withCasts([
+                    'points_per_run_sum_points' => 'float',
+                ])
+                ->withSum(['pointsPerRun'], 'points')
+                ->orderByDesc('points_per_run_sum_points')
+                ->limit(10)
+                ->get()
+                ->map(fn (Player $player) => sprintf('%s: %.2f', $player->name, $player->points_per_run_sum_points))
+                ->whenNotEmpty(fn (Collection $lines) => $this->reply($lines->implode("\n")));
+
+            return;
+        }
+
         /** @var \App\Models\Boss|null $boss */
         $boss = Boss::query()
             ->where('name', $name)
@@ -44,6 +63,7 @@ class AttendsCommand extends Command
                 ? ClassType::tryFrom($args[1])
                 : null;
 
+            /** @var \App\Models\BossChat $bossChat */
             $bossChat = BossChat::query()
                 ->whereBelongsTo($boss)
                 ->whereBelongsTo($chat)
