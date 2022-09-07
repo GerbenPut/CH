@@ -112,10 +112,10 @@ class AttendsCommand extends Command
                 'pointsPerRun' => function (Builder $builder) use ($chat, $bossChat, $classType) {
                     $builder
                         ->when(isset($bossChat), fn (Builder $builder) => $builder->whereBelongsTo($bossChat))
-                        ->when(isset($classType), fn (Builder $builder) => $builder->whereRelation('player', 'class_type', $classType))
                         ->when(isset($chat), fn (Builder $builder) => $builder->whereRelation('bossChat', 'chat_id', $chat->id));
                 },
             ], 'points')
+            ->when(isset($classType), fn (Builder $builder) => $builder->where('class_type', $classType))
             ->orderByDesc('points_per_run_sum_points')
             ->limit($top)
             ->get()
