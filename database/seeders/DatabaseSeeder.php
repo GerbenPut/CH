@@ -34,16 +34,12 @@ class DatabaseSeeder extends Seeder
             'name' => 'QKP',
         ]);
 
-        $bossOne->chats()->attach($DKP, ['kill_worth' => 10, 'camp_worth' => 5]);
-        $bossOne->chats()->attach($QKP, ['kill_worth' => 5, 'camp_worth' => 2]);
+        $bossOne->chats()->attach($DKP, ['kill_worth' => 10]);
+        $bossOne->chats()->attach($QKP, ['kill_worth' => 5]);
 
         Player::query()->create([
             'name' => 'noel',
             'class_type' => ClassType::Mage,
-        ]);
-
-        Run::query()->create([
-            'times_decayed' => 0,
         ]);
     }
 }

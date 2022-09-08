@@ -13,9 +13,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('runs', function (Blueprint $table) {
+        Schema::create('kills', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('times_decayed');
+            $table->foreignId('player_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('boss_chat_id')->constrained('boss_chat')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->unsignedBigInteger('kills');
+            $table->unsignedDecimal('score', 14, 4)->default(0);
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('runs');
+        Schema::dropIfExists('attends');
     }
 };

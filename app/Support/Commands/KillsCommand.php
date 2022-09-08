@@ -2,14 +2,13 @@
 
 namespace App\Support\Commands;
 
-use App\Models\Attend;
+use App\Enums\ClassType;
+use App\Models\Kill;
 use App\Models\Player;
 use App\Models\Boss;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use App\Models\Chat;
-use App\Models\BossChat;
 
 class KillsCommand extends Command
 {
@@ -25,52 +24,65 @@ class KillsCommand extends Command
             ? Chat::DKP()
             : Chat::QKP();
 
-        if (count($args) < 1) {
-            $this->reply('Please specify a player and optional boss name.');
+        $classType = isset($args[0])
+            ? ClassType::tryFrom($args[0])
+            : null;
+
+        if (count($args) < 1 || $classType !== null) {
+            Kill::query()
+                ->with(['player'])
+                ->select('player_id')
+                ->selectRaw('SUM(kills) as kills')
+                ->when($classType !== null, function (Builder $builder) use ($classType) {
+                    return $builder->whereRelation('player', 'class_type', $classType);
+                })
+                ->whereRelation('bossChat', 'chat_id', $chat->id)
+                ->orderByDesc('kills')
+                ->groupBy('player_id')
+                ->limit(10)
+                ->get()
+                ->map(fn (Kill $kill) => sprintf('%s: %d', $kill->player->name, $kill->kills))
+                ->whenNotEmpty(fn (Collection $lines) => $this->reply($lines->implode("\n")));
 
             return;
         }
 
+        /** @var \App\Models\Player|null $player */
         $player = Player::query()
             ->where('name', $args[0])
-            ->firstOrFail();
+            ->first();
 
-        if (isset($args[1])) {
-            $boss = Boss::query()
-                ->where('name', $args[1])
-                ->whereHas('chats', fn (Builder $builder) => $builder->whereKey($chat))
-                ->firstOrFail();
+        if ($player !== null) {
+            $kills = Kill::query()
+                ->whereBelongsTo($player)
+                ->whereRelation('bossChat', 'chat_id', $chat->id)
+                ->sum('kills');
 
-            $bossChat = BossChat::query()
-                ->whereBelongsTo($boss)
-                ->whereBelongsTo($chat)
-                ->firstOrFail();
-        }
-
-        $attends = Attend::query()
-            ->when(
-                isset($bossChat),
-                fn (Builder $builder) => $builder->whereBelongsTo($bossChat),
-                fn (Builder $builder) => $builder->whereRelation('bossChat', 'chat_id', $chat->id),
-            )
-            ->whereBelongsTo($player)
-            ->get();
-
-        if (isset($bossChat)) {
-            $this->reply($attends->sum('kills'));
+            $this->reply($kills);
 
             return;
         }
 
-        $attends
-            ->groupBy('bossChat.boss_id')
-            ->map(fn (EloquentCollection $attends) => [
-                'boss' => $attends->first()->bossChat->boss,
-                'kills' => $attends->sum('kills'),
-            ])
-            ->map(fn (array $attend) => sprintf('%s: %d', $attend['boss']->name, $attend['kills']))
-            ->whenNotEmpty(function (Collection $lines) {
-                $this->reply($lines->implode("\n"));
-            });
+        /** @var \App\Models\Boss|null $boss */
+        $boss = Boss::query()
+            ->where('name', $args[0])
+            ->first();
+
+        if ($boss !== null) {
+            Kill::query()
+                ->with(['player'])
+                ->select('player_id')
+                ->selectRaw('SUM(kills) as kills')
+                ->whereRelation('bossChat', [
+                    'boss_id' => $boss->id,
+                    'chat_id' => $chat->id,
+                ])
+                ->orderByDesc('kills')
+                ->groupBy('player_id')
+                ->limit(10)
+                ->get()
+                ->map(fn (Kill $kill) => sprintf('%s: %d', $kill->player->name, $kill->kills))
+                ->whenNotEmpty(fn (Collection $lines) => $this->reply($lines->implode("\n")));
+        }
     }
 }

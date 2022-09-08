@@ -18,7 +18,6 @@ return new class extends Migration
             $table->foreignId('boss_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('chat_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->unsignedTinyInteger('kill_worth');
-            $table->unsignedTinyInteger('camp_worth');
             $table->timestamps();
         });
     }

@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $boss_id
  * @property int $chat_id
  * @property int $kill_worth
- * @property int $camp_worth
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \App\Models\Boss $boss

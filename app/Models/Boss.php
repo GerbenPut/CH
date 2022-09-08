@@ -31,7 +31,7 @@ class Boss extends Model
     {
         return $this->belongsToMany(Chat::class)
             ->using(BossChat::class)
-            ->withPivot(['camp_worth', 'kill_worth'])
+            ->withPivot(['kill_worth'])
             ->withTimestamps();
     }
 

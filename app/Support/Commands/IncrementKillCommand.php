@@ -2,12 +2,14 @@
 
 namespace App\Support\Commands;
 
+use App\Models\Attend;
+use App\Models\Kill;
 use App\Models\Boss;
 use App\Models\Player;
-use App\Models\Run;
 use App\Models\Chat;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\BossChat;
+use Illuminate\Support\Facades\DB;
 
 class IncrementKillCommand extends Command
 {
@@ -29,18 +31,6 @@ class IncrementKillCommand extends Command
             return;
         }
 
-        $boss = array_shift($args);
-
-        if ($boss === 'camped' && count($args) >= 2) {
-            $boss = $args[0];
-            $hours = intval($args[1]);
-        }
-
-        /** @var \App\Models\Run $run */
-        $run = Run::query()
-            ->latest()
-            ->firstOrFail();
-
         /** @var \App\Models\Player $player */
         $player = Player::query()
             ->where('name', $command)
@@ -48,38 +38,42 @@ class IncrementKillCommand extends Command
 
         /** @var \App\Models\Boss $boss */
         $boss = Boss::query()
-            ->where('name', $boss)
+            ->where('name', array_shift($args))
             ->whereHas('chats', fn (Builder $builder) => $builder->whereKey($chat))
             ->firstOrFail();
 
+        /** @var \App\Models\BossChat $bossChat */
         $bossChat = BossChat::query()
             ->whereBelongsTo($boss)
             ->whereBelongsTo($chat)
             ->firstOrFail();
 
-        /** @var \App\Models\Attend $attend */
-        $attend = $player->attends()
+        /** @var \App\Models\Kill $kill */
+        $kill = $player->kills()
             ->whereBelongsTo($bossChat)
-            ->whereBelongsTo($run)
             ->firstOrNew();
 
-        $attend->camps ??= 0;
-        $attend->kills ??= 0;
+        $kill->kills ??= 0;
+        $kill->kills++;
 
-        if (isset($hours)) {
-            $attend->camps += $hours;
-        } else {
-            $attend->kills++;
-        }
+        $kill->bossChat()->associate($bossChat);
 
-        $attend->bossChat()->associate($bossChat);
-        $attend->run()->associate($run);
-        $attend->save();
+        /** @var \App\Models\Attend $attend */
+        $attend = Attend::query()
+            ->whereBelongsTo($chat)
+            ->whereBelongsTo($player)
+            ->firstOrNew();
 
-        if (isset($hours)) {
-            $this->reply('Camps incremented');
-        } else {
-            $this->reply('Kills incremented');
-        }
+        $attend->chat()->associate($chat);
+        $attend->player()->associate($player);
+        $attend->score ??= 0;
+        $attend->score += $bossChat->kill_worth;
+
+        DB::transaction(function () use ($attend, $kill) {
+            $attend->save();
+            $kill->save();
+        });
+
+        $this->reply('Kills incremented');
     }
 }

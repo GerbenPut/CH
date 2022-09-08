@@ -21,12 +21,6 @@ class AddPlayerCommand extends Command
         $classTypeRaw = array_shift($args);
         $classType = ClassType::tryFrom($classTypeRaw);
 
-        if ($name === 'attends') {
-            $this->reply('Invalid name, this is a reserved keyword.');
-
-            return;
-        }
-
         if ($classType === null) {
             $this->reply('Unknown class type "' . $classTypeRaw . '".');
 

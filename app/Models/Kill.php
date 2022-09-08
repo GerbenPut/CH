@@ -6,24 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int $boss_chat_id
+ * @property int $id
  * @property int $player_id
- * @property float $points
+ * @property int $boss_chat_id
+ * @property int $kills
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \App\Models\BossChat $bossChat
  * @property-read \App\Models\Player $player
  * @property-read \App\Models\Run $run
  */
-class PointsPerRun extends Model
+class Kill extends Model
 {
     protected $casts = [
         'boss_chat_id' => 'int',
+        'kills' => 'int',
         'player_id' => 'int',
-        'points' => 'float',
     ];
-
-    protected $table = 'points_per_run';
-
-    public $timestamps = false;
 
     public function bossChat(): BelongsTo
     {

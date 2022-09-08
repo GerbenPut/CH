@@ -9,6 +9,9 @@ use App\Support\Commands\GroupIdCommand;
 use App\Support\Commands\IncrementKillCommand;
 use App\Support\Commands\RemovePlayerCommand;
 use App\Support\Commands\ResetCommand;
+use App\Support\Commands\Score\AddCommand;
+use App\Support\Commands\Score\ResetCommand as ResetScoreCommand;
+use App\Support\Commands\Score\SubtractCommand;
 use App\Support\Commands\TimersCommand;
 use App\Support\Commands\UnknownCommand;
 use App\Support\Commands\AttendsCommand;
@@ -20,8 +23,11 @@ return [
         ],
         'admin' => [
             AddPlayerCommand::class,
+            AddCommand::class, // Must be behind AddPlayerCommand
             ChangeCommand::class,
             RemovePlayerCommand::class,
+            ResetScoreCommand::class,
+            SubtractCommand::class,
         ],
         'attends_dkp' => [
             AttendsCommand::class,
