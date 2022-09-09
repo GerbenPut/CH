@@ -53,12 +53,18 @@ class KillsCommand extends Command
             ->first();
 
         if ($player !== null) {
-            $kills = Kill::query()
+            Kill::query()
+                ->with(['bossChat.boss'])
+                ->select('boss_chat_id')
+                ->selectRaw('SUM(kills) as kills')
+                ->leftJoin('boss_chat', 'kills.boss_chat_id', 'boss_chat.id')
                 ->whereBelongsTo($player)
-                ->whereRelation('bossChat', 'chat_id', $chat->id)
-                ->sum('kills');
-
-            $this->reply($kills);
+                ->where('boss_chat.chat_id', $chat->id)
+                ->groupBy('kills.boss_chat_id')
+                ->orderByDesc('kills')
+                ->get()
+                ->map(fn (Kill $kill) => sprintf('%s: %d', $kill->bossChat->boss->name, $kill->kills))
+                ->whenNotEmpty(fn (Collection $lines) => $this->reply($lines->implode("\n")));
 
             return;
         }

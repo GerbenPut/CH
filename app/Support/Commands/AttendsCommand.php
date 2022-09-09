@@ -34,7 +34,7 @@ class AttendsCommand extends Command
                 ->first();
 
             if ($attend !== null) {
-                $this->reply($attend->score);
+                $this->reply((int) ceil($attend->score));
             }
         }
 
@@ -45,7 +45,7 @@ class AttendsCommand extends Command
             ->orderByDesc('score')
             ->limit(10)
             ->get()
-            ->map(fn (Attend $attend) => sprintf('%s: %.2f', $attend->player->name, $attend->score))
+            ->map(fn (Attend $attend) => sprintf('%s: %d', $attend->player->name, ceil($attend->score)))
             ->whenNotEmpty(fn (Collection $lines) => $this->reply($lines->implode("\n")));
     }
 }
