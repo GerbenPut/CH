@@ -90,5 +90,7 @@ class KillsCommand extends Command
                 ->map(fn (Kill $kill) => sprintf('%s: %d', $kill->player->name, $kill->kills))
                 ->whenNotEmpty(fn (Collection $lines) => $this->reply($lines->implode("\n")));
         }
+
+        $this->reply('Unknown kill request');
     }
 }

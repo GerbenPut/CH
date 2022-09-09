@@ -37,7 +37,7 @@ class RunCommand
             return;
         }
 
-        $words = preg_split('/\s+/', $event->getText(), flags: PREG_SPLIT_NO_EMPTY);
+        $words = preg_split('/\s+/', mb_strtolower($event->getText()), flags: PREG_SPLIT_NO_EMPTY);
 
         $command = collect($commands)
             ->map(function (string $class) use ($event, $group, $words) {
@@ -48,7 +48,7 @@ class RunCommand
                     'group' => $group,
                 ]);
             })
-            ->first(fn (Command $command) => $command->shouldRun(mb_strtolower($words[0])));
+            ->first(fn (Command $command) => $command->shouldRun($words[0]));
 
         if ($command === null) {
             return;
