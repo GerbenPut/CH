@@ -28,7 +28,7 @@ class ChangeCommand extends Command
 
         /** @var \App\Models\Boss $boss */
         $boss = Boss::query()
-            ->where('name', $name)
+            ->byName($name)
             ->firstOrFail();
 
         $boss->open = intval($args[0]);

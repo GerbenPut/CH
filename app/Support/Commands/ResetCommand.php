@@ -20,7 +20,7 @@ class ResetCommand extends Command
 
         /** @var \App\Models\Boss $boss */
         $boss = Boss::query()
-            ->where('name', $args[0])
+            ->byName($args[0])
             ->firstOrFail();
 
         if ($group === 'timers' && $boss->type === BossType::Raid) {

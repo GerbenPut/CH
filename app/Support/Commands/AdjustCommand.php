@@ -37,7 +37,7 @@ class AdjustCommand extends Command
 
         /** @var \App\Models\Boss $boss */
         $boss = Boss::query()
-            ->where('name', $name)
+            ->byName($name)
             ->firstOrFail();
 
         $resetAt = $boss->latestReset->reset_at ?? Date::now();

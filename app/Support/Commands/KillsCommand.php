@@ -71,7 +71,7 @@ class KillsCommand extends Command
 
         /** @var \App\Models\Boss|null $boss */
         $boss = Boss::query()
-            ->where('name', $args[0])
+            ->byName($args[0])
             ->first();
 
         if ($boss !== null) {

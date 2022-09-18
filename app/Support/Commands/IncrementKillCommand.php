@@ -38,7 +38,7 @@ class IncrementKillCommand extends Command
 
         /** @var \App\Models\Boss $boss */
         $boss = Boss::query()
-            ->where('name', array_shift($args))
+            ->byName(array_shift($args))
             ->whereHas('chats', fn (Builder $builder) => $builder->whereKey($chat))
             ->firstOrFail();
 
