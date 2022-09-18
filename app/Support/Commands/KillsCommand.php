@@ -75,6 +75,10 @@ class KillsCommand extends Command
             ->first();
 
         if ($boss !== null) {
+            $classType = isset($args[1])
+                ? ClassType::tryFrom($args[1])
+                : null;
+
             Kill::query()
                 ->with(['player'])
                 ->select('player_id')
@@ -83,12 +87,17 @@ class KillsCommand extends Command
                     'boss_id' => $boss->id,
                     'chat_id' => $chat->id,
                 ])
+                ->when($classType !== null, function (Builder $builder) use ($classType) {
+                    $builder->whereRelation('player', 'class_type', $classType);
+                })
                 ->orderByDesc('kills')
                 ->groupBy('player_id')
                 ->limit(10)
                 ->get()
                 ->map(fn (Kill $kill) => sprintf('%s: %d', $kill->player->name, $kill->kills))
                 ->whenNotEmpty(fn (Collection $lines) => $this->reply($lines->implode("\n")));
+
+            return;
         }
 
         $this->reply('Unknown kill request');
