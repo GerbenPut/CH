@@ -36,6 +36,8 @@ class AttendsCommand extends Command
             if ($attend !== null) {
                 $this->reply((int) ceil($attend->score));
             }
+
+            return;
         }
 
         Attend::query()
