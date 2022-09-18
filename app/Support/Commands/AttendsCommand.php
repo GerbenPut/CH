@@ -3,6 +3,7 @@
 namespace App\Support\Commands;
 
 use App\Models\Attend;
+use App\Models\Player;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use App\Enums\ClassType;
@@ -27,15 +28,17 @@ class AttendsCommand extends Command
             : null;
 
         if ($classType === null && isset($args[0])) {
+            $player = Player::query()
+                ->where('name', $args[0])
+                ->firstOrFail();
+
             /** @var \App\Models\Attend $attend */
             $attend = Attend::query()
                 ->whereBelongsTo($chat)
-                ->whereRelation('player', 'name', $args[0])
-                ->first();
+                ->whereBelongsTo($player)
+                ->firstOrNew();
 
-            if ($attend !== null) {
-                $this->reply((int) ceil($attend->score));
-            }
+            $this->reply((int) ceil($attend->score));
 
             return;
         }
