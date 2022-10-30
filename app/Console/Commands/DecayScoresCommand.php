@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Player;
+use App\Models\Attend;
 use Illuminate\Console\Command;
 use Illuminate\Database\Query\Expression;
 
@@ -22,7 +22,7 @@ class DecayScoresCommand extends Command
      */
     public function handle(): int
     {
-        Player::query()->update([
+        Attend::query()->update([
             'score' => new Expression('score * .8'),
         ]);
 

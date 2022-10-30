@@ -2,14 +2,14 @@
 
 namespace App\Support\Commands\Score;
 
-use App\Models\Attend;
 use App\Models\Chat;
+use App\Models\Kill;
 use App\Models\Player;
 use App\Support\Commands\Command;
 
-class ResetCommand extends Command
+class KillsResetCommand extends Command
 {
-    protected string $name = 'reset';
+    protected string $name = 'reset-kills';
 
     public function handle(array $args): void
     {
@@ -29,21 +29,21 @@ class ResetCommand extends Command
             ->where('name', $args[0])
             ->firstOrFail();
 
-        /** @var \App\Models\Attend $attend */
-        $attend = Attend::query()
-            ->whereBelongsTo($chat)
+        /** @var \App\Models\Kill $kill */
+        $kill = Kill::query()
+            ->whereBelongsTo($chat, 'bossChat.chat')
             ->whereBelongsTo($player)
             ->firstOrNew();
 
-        if (!$attend->exists) {
-            $this->reply('Attends reset');
+        if (!$kill->exists) {
+            $this->reply('Kills reset');
 
             return;
         }
 
-        $attend->score = 0;
-        $attend->save();
+        $kill->kills = 0;
+        $kill->save();
 
-        $this->reply('Attends reset');
+        $this->reply('Kills reset');
     }
 }

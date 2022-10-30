@@ -10,6 +10,9 @@ use App\Support\Commands\IncrementKillCommand;
 use App\Support\Commands\RemovePlayerCommand;
 use App\Support\Commands\ResetCommand;
 use App\Support\Commands\Score\AddCommand;
+use App\Support\Commands\Score\AllKillsResetCommand;
+use App\Support\Commands\Score\AllResetCommand;
+use App\Support\Commands\Score\KillsResetCommand;
 use App\Support\Commands\Score\ResetCommand as ResetScoreCommand;
 use App\Support\Commands\Score\SubtractCommand;
 use App\Support\Commands\TimersCommand;
@@ -24,7 +27,10 @@ return [
         'admin' => [
             AddPlayerCommand::class,
             AddCommand::class, // Must be behind AddPlayerCommand
+            AllResetCommand::class,
+            AllKillsResetCommand::class,
             ChangeCommand::class,
+            KillsResetCommand::class,
             RemovePlayerCommand::class,
             ResetScoreCommand::class,
             SubtractCommand::class,
